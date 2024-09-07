@@ -1,27 +1,6 @@
-# rusty_spine
+# rusty_spine3.8
 
-Spine runtime for Rust (and wasm!) transpiled from the official C Runtime. Supports [Spine 3.8 and 4.1](http://esotericsoftware.com/).
-
-```
-[dependencies]
-rusty_spine = "0.3.1"
-```
-
-[Online demo!](https://jabuwu.github.io/rusty_spine/)
-
-## Rust API
-
-A Rust API is provided on top of the C API, because working with C APIs directly in Rust is tedious and error prone. It's made to be as thin a wrapper as possible.
-
-The Rust API is unstable and changes often.
-
-[Rust API Documentation](https://docs.rs/rusty_spine/latest/rusty_spine/index.html)
-
-## C API
-
-If you wish to use the C API directly (either because the Rust API lacks a feature or for performance reasons), it is available under the `rusty_spine::c` import. [See the C example](https://github.com/jabuwu/rusty_spine/blob/main/examples/c.rs).
-
-[C API Documentation](http://en.esotericsoftware.com/spine-c)
+This is a fork of [rusty_spine](https://github.com/jabuwu/rusty_spine) that supports [Spine 3.8](http://esotericsoftware.com/). Thanks to [pocams](https://github.com/pocams) for the [original PR](https://github.com/jabuwu/rusty_spine/pull/3).
 
 ## License
 
@@ -54,9 +33,3 @@ Provides an [egui](https://github.com/emilk/egui) debugger window for viewing sk
 Default: yes
 
 Provides additional math functions using [mint](https://docs.rs/mint).
-
-### spine38
-
-Default: no
-
-Builds a Spine 3.8-compatible runtime instead of a 4.1-compatible one. Enable this feature if you are loading files saved with Spine 3.8.x instead of 4.1.x.
