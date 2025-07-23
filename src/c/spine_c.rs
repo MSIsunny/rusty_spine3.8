@@ -13574,21 +13574,21 @@ pub unsafe extern "C" fn spSkeletonBinary_readSkeletonData(
         _spFree((*skeletonData).version as *mut c_void);
         (*skeletonData).version = 0 as *const c_char;
     }
-    if spine_strcmp(
-        (*skeletonData).version,
-        b"3.8.75\0" as *const u8 as *const c_char,
-    ) == 0 as c_int
-    {
-        _spFree(input as *mut c_void);
-        spSkeletonData_dispose(skeletonData);
-        _spSkeletonBinary_setError(
-            self_0,
-            b"Unsupported skeleton data, please export with a newer version of Spine.\0"
-                as *const u8 as *const c_char,
-            b"\0" as *const u8 as *const c_char,
-        );
-        return 0 as *mut spSkeletonData;
-    }
+    // if spine_strcmp(
+    //     (*skeletonData).version,
+    //     b"3.8.75\0" as *const u8 as *const c_char,
+    // ) == 0 as c_int
+    // {
+    //     _spFree(input as *mut c_void);
+    //     spSkeletonData_dispose(skeletonData);
+    //     _spSkeletonBinary_setError(
+    //         self_0,
+    //         b"Unsupported skeleton data, please export with a newer version of Spine.\0"
+    //             as *const u8 as *const c_char,
+    //         b"\0" as *const u8 as *const c_char,
+    //     );
+    //     return 0 as *mut spSkeletonData;
+    // }
     (*skeletonData).x = readFloat(input);
     (*skeletonData).y = readFloat(input);
     (*skeletonData).width = readFloat(input);
@@ -16385,21 +16385,21 @@ pub unsafe extern "C" fn spSkeletonJson_readSkeletonData(
                 0 as *const c_char,
             ),
         );
-        if spine_strcmp(
-            (*skeletonData).version,
-            b"3.8.75\0" as *const u8 as *const c_char,
-        ) == 0 as c_int
-        {
-            spSkeletonData_dispose(skeletonData);
-            _spSkeletonJson_setError(
-                self_0,
-                root,
-                b"Unsupported skeleton data, please export with a newer version of Spine.\0"
-                    as *const u8 as *const c_char,
-                b"\0" as *const u8 as *const c_char,
-            );
-            return 0 as *mut spSkeletonData;
-        }
+        // if spine_strcmp(
+        //     (*skeletonData).version,
+        //     b"3.8.75\0" as *const u8 as *const c_char,
+        // ) == 0 as c_int
+        // {
+        //     spSkeletonData_dispose(skeletonData);
+        //     _spSkeletonJson_setError(
+        //         self_0,
+        //         root,
+        //         b"Unsupported skeleton data, please export with a newer version of Spine.\0"
+        //             as *const u8 as *const c_char,
+        //         b"\0" as *const u8 as *const c_char,
+        //     );
+        //     return 0 as *mut spSkeletonData;
+        // }
         (*skeletonData).x = Json_getFloat(
             skeleton,
             b"x\0" as *const u8 as *const c_char,
