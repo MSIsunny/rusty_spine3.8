@@ -20599,6 +20599,7 @@ fn handle_region_name(frame_path: &str) -> String {
     let builds_index = frame_path.find("builds/").unwrap();
     let name = &frame_path[builds_index..];
     let name = name.replace(".png", "");
+    println!("region name: {}", name);
     name.to_string()
 }
 
