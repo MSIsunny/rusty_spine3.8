@@ -6,7 +6,7 @@ use std::{
 
 use crate::{
     c::{
-        spSkeletonJson, spSkeletonJson_create, spSkeletonJson_dispose,
+        spSkeletonJson, spSkeletonJson_create, spSkeletonJson_create_empty, spSkeletonJson_dispose,
         spSkeletonJson_readSkeletonData, spSkeletonJson_readSkeletonDataFile,
     },
     c_interface::{from_c_str, SyncPtr},
@@ -26,6 +26,15 @@ pub struct SkeletonJson {
 }
 
 impl SkeletonJson {
+    pub fn empty_new() -> Self {
+        let c_skeleton_json = unsafe { spSkeletonJson_create_empty() };
+        Self {
+            c_skeleton_json: SyncPtr(c_skeleton_json),
+            owns_memory: true,
+            atlas: None,
+        }
+    }
+
     /// Create a new JSON loader using the default atlas attachment loader.
     ///
     /// ```
