@@ -20337,6 +20337,30 @@ pub use crate::c::environment::types::*;
 
 // ---------------------------------------------------------------------------
 
+pub unsafe extern "C" fn spAtlas_create_empty() -> *mut spAtlas {
+    let mut self_0: *mut spAtlas = 0 as *mut spAtlas;
+    self_0 = _spCalloc(
+        1 as c_int as size_t,
+        ::core::mem::size_of::<spAtlas>() as c_ulong,
+        b"spine.c\0" as *const u8 as *const c_char,
+        3198 as c_int,
+    ) as *mut spAtlas;
+
+    (*self_0).rendererObject = std::ptr::null_mut();
+
+    let mut str: Str = Str {
+        begin: 0 as *const c_char,
+        end: 0 as *const c_char,
+    };
+    let mut name: *mut c_char = mallocString(&mut str);
+    (*self_0).pages = spAtlasPage_create(self_0, name);
+
+    let mut region: *mut spAtlasRegion = spAtlasRegion_create();
+    (*self_0).regions = region;
+
+    return self_0;
+}
+
 pub unsafe extern "C" fn spAttachmentLoader_create_empty() -> *mut spAttachmentLoader {
     let mut self_0: *mut spAtlasAttachmentLoader = _spCalloc(
         1 as c_int as size_t,
@@ -20361,7 +20385,7 @@ pub unsafe extern "C" fn spAttachmentLoader_create_empty() -> *mut spAttachmentL
         None,
     );
 
-    let mut atlas: *mut spAtlas = 0 as *mut spAtlas;
+    let atlas = spAtlas_create_empty();
     (*self_0).atlas = atlas;
 
     let attachment_loader = &mut (*self_0).super_0 as *mut spAttachmentLoader;
