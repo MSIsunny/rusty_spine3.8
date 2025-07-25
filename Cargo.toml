@@ -7,20 +7,27 @@ homepage = "https://github.com/jabuwu/rusty_spine"
 repository = "https://github.com/jabuwu/rusty_spine"
 readme = "readme.md"
 license-file = "LICENSE"
-exclude = [
-    "assets/*",
-]
+exclude = ["assets/*"]
 
 [dependencies]
 libc = { version = "0.2", optional = true }
 egui = { version = "0.19", optional = true }
 egui_extras = { version = "0.19", optional = true }
 mint = { version = "0.5", optional = true }
+image = { version = "0.24", default-features = false, features = [
+    "png",
+    "webp",
+    "jpeg",
+] }
 
 [dev-dependencies]
 miniquad = "0.3.16"
-image = { version = "0.24", default-features = false, features = [ "png", "webp", "jpeg" ] }
-glam = { version = "0.21", features = [ "mint" ] }
+image = { version = "0.24", default-features = false, features = [
+    "png",
+    "webp",
+    "jpeg",
+] }
+glam = { version = "0.21", features = ["mint"] }
 cosmic-text = "0.9"
 transpiler = { path = "./transpiler" }
 
@@ -28,7 +35,7 @@ transpiler = { path = "./transpiler" }
 opt-level = 3
 
 [features]
-default = [ "draw_functions", "mint" ]
-use_libc = [ "libc" ]
+default = ["draw_functions", "mint"]
+use_libc = ["libc"]
 draw_functions = []
-egui_debugger = [ "egui", "egui_extras" ]
+egui_debugger = ["egui", "egui_extras"]

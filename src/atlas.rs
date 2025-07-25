@@ -103,15 +103,18 @@ impl Atlas {
         }
     }
 
-    pub fn new_from_folder(path: &String) -> Result<Atlas, SpineError> {
-        let c_atlas = unsafe { spAtlas_create_from_folder(path) };
+    pub fn new_from_folder(path: &str) -> Result<Atlas, SpineError> {
+        let path = path.to_string();
+        let c_atlas = unsafe { spAtlas_create_from_folder(&path) };
         if !c_atlas.is_null() {
             Ok(Self {
                 c_atlas: SyncPtr(c_atlas),
                 owns_memory: true,
             })
         } else {
-            Err(SpineError::FailedToReadFile { file: path.clone() })
+            Err(SpineError::FailedToReadFile {
+                file: path.to_string(),
+            })
         }
     }
 

@@ -20595,6 +20595,8 @@ fn get_files_in_dir_internal(dir: &str, max_depth: u32, depth: u32) -> Vec<FileO
 }
 
 pub unsafe extern "C" fn spAtlas_create_from_folder(dir: &String) -> *mut spAtlas {
+    use image::GenericImageView;
+    // use image::{DynamicImage, GenericImageView, RgbaImage};
     let dir_path = std::path::Path::new(dir);
 
     let self_0 = _spCalloc(
@@ -20609,12 +20611,60 @@ pub unsafe extern "C" fn spAtlas_create_from_folder(dir: &String) -> *mut spAtla
         return abortAtlas(self_0);
     }
 
+    let mut lastPage: *mut spAtlasPage = 0 as *mut spAtlasPage;
+    let mut lastRegion: *mut spAtlasRegion = 0 as *mut spAtlasRegion;
+
+    let mut index = 0;
+
     let build_paths: Vec<FileOrFolder> = get_files_in_dir_internal(dir, 2, 0);
     build_paths.iter().for_each(|build_path| {
         build_path.children.iter().for_each(|symbol_path| {
             symbol_path.children.iter().for_each(|frame_path| {
                 let frame_path = frame_path.path.clone();
-                println!("test: {}", frame_path);
+                // println!("test: {}", frame_path);
+                if frame_path.ends_with(".png") {
+                    let name = std::ffi::CString::new(frame_path.clone()).unwrap();
+                    let page = spAtlasPage_create(self_0, name.as_ptr());
+
+                    if !lastPage.is_null() {
+                        (*lastPage).next = page;
+                    } else {
+                        (*self_0).pages = page;
+                    }
+                    lastPage = page;
+
+                    let mut region: *mut spAtlasRegion = spAtlasRegion_create();
+                    if !lastRegion.is_null() {
+                        (*lastRegion).next = region;
+                    } else {
+                        (*self_0).regions = region;
+                    }
+                    lastRegion = region;
+                    (*region).page = page;
+
+                    (*region).name = name.as_ptr();
+
+                    let img = image::open(&frame_path).unwrap();
+                    let (width, height) = img.dimensions();
+
+                    (*region).x = 0;
+                    (*region).y = 0;
+                    (*region).width = width as i32;
+                    (*region).height = height as i32;
+                    (*region).u = 0.0;
+                    (*region).v = 1.0;
+                    (*region).u2 = 1.0;
+                    (*region).v2 = 0.0;
+                    (*region).offsetX = 0;
+                    (*region).offsetY = 0;
+                    (*region).originalWidth = width as i32;
+                    (*region).originalHeight = height as i32;
+                    (*region).index = index as i32;
+                    (*region).degrees = 0 as c_int;
+                    (*region).rotate = ((*region).degrees == 90 as c_int) as c_int;
+
+                    index += 1;
+                }
             })
         })
     });
