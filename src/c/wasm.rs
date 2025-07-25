@@ -126,8 +126,10 @@ impl Allocator {
 
     pub unsafe fn free(&mut self, ptr: *const c_void) {
         if !ptr.is_null() {
-            let layout = self.allocations.remove(&ptr).unwrap();
-            unsafe { std::alloc::dealloc(ptr as *mut u8, layout) };
+            let layout = self.allocations.remove(&ptr);
+            if let Some(layout) = layout {
+                unsafe { std::alloc::dealloc(ptr as *mut u8, layout) };
+            }
         }
     }
 
