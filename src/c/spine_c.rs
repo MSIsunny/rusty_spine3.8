@@ -20594,6 +20594,14 @@ fn get_files_in_dir_internal(dir: &str, max_depth: u32, depth: u32) -> Vec<FileO
     files
 }
 
+fn handle_region_name(frame_path: &str) -> String {
+    // 返回值应该为builds/build_name/symbol_name/frame_name
+    let builds_index = frame_path.find("builds/").unwrap();
+    let name = &frame_path[builds_index..];
+    let name = name.replace(".png", "");
+    name.to_string()
+}
+
 pub unsafe extern "C" fn spAtlas_create_from_folder(dir: &String) -> *mut spAtlas {
     use image::GenericImageView;
     // use image::{DynamicImage, GenericImageView, RgbaImage};
@@ -20642,7 +20650,7 @@ pub unsafe extern "C" fn spAtlas_create_from_folder(dir: &String) -> *mut spAtla
                     lastRegion = region;
                     (*region).page = page;
 
-                    let region_name = frame_path.split_once(dir).unwrap().1.to_string();
+                    let region_name = handle_region_name(&frame_path);
                     let region_name = std::ffi::CString::new(region_name).unwrap();
 
                     (*region).name = region_name.as_ptr();
