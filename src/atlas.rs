@@ -1,7 +1,10 @@
 use std::ffi::CString;
 use std::{path::Path, ptr::null_mut};
 
-use crate::c::{spAtlasFilter, spAtlasFormat, spAtlasRegion, spAtlasWrap, spAtlas_createFromFile};
+use crate::c::{
+    spAtlasFilter, spAtlasFormat, spAtlasRegion, spAtlasWrap, spAtlas_createFromFile,
+    spAtlas_create_from_folder,
+};
 use crate::c_interface::{CTmpRef, NewFromPtr, SyncPtr};
 use crate::{
     c::{c_int, spAtlas, spAtlasPage, spAtlas_create, spAtlas_dispose},
@@ -97,6 +100,18 @@ impl Atlas {
             Err(SpineError::FailedToReadFile {
                 file: path_str.to_owned(),
             })
+        }
+    }
+
+    pub fn new_from_folder(path: &String) -> Result<Atlas, SpineError> {
+        let c_atlas = unsafe { spAtlas_create_from_folder(path) };
+        if !c_atlas.is_null() {
+            Ok(Self {
+                c_atlas: SyncPtr(c_atlas),
+                owns_memory: true,
+            })
+        } else {
+            Err(SpineError::FailedToReadFile { file: path.clone() })
         }
     }
 

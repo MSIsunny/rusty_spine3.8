@@ -20337,6 +20337,291 @@ pub use crate::c::environment::types::*;
 
 // ---------------------------------------------------------------------------
 
+pub unsafe extern "C" fn spAtlas_create__(
+    mut begin: *const c_char,
+    mut length: c_int,
+    mut dir: *const c_char,
+    mut rendererObject: *mut c_void,
+) -> *mut spAtlas {
+    let mut self_0: *mut spAtlas = 0 as *mut spAtlas;
+    let mut count: c_int = 0;
+    let mut end: *const c_char = begin.offset(length as isize);
+    let mut dirLength: c_int = spine_strlen(dir) as c_int;
+    let mut needsSlash: c_int = (dirLength > 0 as c_int
+        && *dir.offset((dirLength - 1 as c_int) as isize) as c_int != '/' as i32
+        && *dir.offset((dirLength - 1 as c_int) as isize) as c_int != '\\' as i32)
+        as c_int;
+    let mut page: *mut spAtlasPage = 0 as *mut spAtlasPage;
+    let mut lastPage: *mut spAtlasPage = 0 as *mut spAtlasPage;
+    let mut lastRegion: *mut spAtlasRegion = 0 as *mut spAtlasRegion;
+    let mut str: Str = Str {
+        begin: 0 as *const c_char,
+        end: 0 as *const c_char,
+    };
+    let mut tuple: [Str; 4] = [Str {
+        begin: 0 as *const c_char,
+        end: 0 as *const c_char,
+    }; 4];
+    self_0 = _spCalloc(
+        1 as c_int as size_t,
+        ::core::mem::size_of::<spAtlas>() as c_ulong,
+        b"spine.c\0" as *const u8 as *const c_char,
+        3198 as c_int,
+    ) as *mut spAtlas;
+    (*self_0).rendererObject = rendererObject;
+    while readLine(&mut begin, end, &mut str) != 0 {
+        if (str.end).offset_from(str.begin) as c_long == 0 as c_int as c_long {
+            page = 0 as *mut spAtlasPage;
+        } else if page.is_null() {
+            let mut name: *mut c_char = mallocString(&mut str);
+            let mut path: *mut c_char = _spMalloc(
+                (::core::mem::size_of::<c_char>() as c_ulong).wrapping_mul(
+                    ((dirLength + needsSlash) as c_ulong)
+                        .wrapping_add(spine_strlen(name))
+                        .wrapping_add(1 as c_int as c_ulong),
+                ),
+                b"spine.c\0" as *const u8 as *const c_char,
+                3206 as c_int,
+            ) as *mut c_char;
+            spine_memcpy(
+                path as *mut c_void,
+                dir as *const c_void,
+                dirLength as size_t,
+            );
+            if needsSlash != 0 {
+                *path.offset(dirLength as isize) = '/' as i32 as c_char;
+            }
+            spine_strcpy(
+                path.offset(dirLength as isize).offset(needsSlash as isize),
+                name,
+            );
+            page = spAtlasPage_create(self_0, name);
+            _spFree(name as *mut c_void);
+            if !lastPage.is_null() {
+                (*lastPage).next = page;
+            } else {
+                (*self_0).pages = page;
+            }
+            lastPage = page;
+            match readTuple(&mut begin, end, tuple.as_mut_ptr()) {
+                0 => return abortAtlas(self_0),
+                2 => {
+                    (*page).width = toInt(tuple.as_mut_ptr());
+                    (*page).height = toInt(tuple.as_mut_ptr().offset(1 as c_int as isize));
+                    if readTuple(&mut begin, end, tuple.as_mut_ptr()) == 0 {
+                        return abortAtlas(self_0);
+                    }
+                }
+                _ => {}
+            }
+            (*page).format =
+                indexOf(formatNames.as_mut_ptr(), 8 as c_int, tuple.as_mut_ptr()) as spAtlasFormat;
+            if readTuple(&mut begin, end, tuple.as_mut_ptr()) == 0 {
+                return abortAtlas(self_0);
+            }
+            (*page).minFilter = indexOf(
+                textureFilterNames.as_mut_ptr(),
+                8 as c_int,
+                tuple.as_mut_ptr(),
+            ) as spAtlasFilter;
+            (*page).magFilter = indexOf(
+                textureFilterNames.as_mut_ptr(),
+                8 as c_int,
+                tuple.as_mut_ptr().offset(1 as c_int as isize),
+            ) as spAtlasFilter;
+            if readValue(&mut begin, end, &mut str) == 0 {
+                return abortAtlas(self_0);
+            }
+            (*page).uWrap = SP_ATLAS_CLAMPTOEDGE;
+            (*page).vWrap = SP_ATLAS_CLAMPTOEDGE;
+            if equals(&mut str, b"none\0" as *const u8 as *const c_char) == 0 {
+                if (str.end).offset_from(str.begin) as c_long == 1 as c_int as c_long {
+                    if *str.begin as c_int == 'x' as i32 {
+                        (*page).uWrap = SP_ATLAS_REPEAT;
+                    } else if *str.begin as c_int == 'y' as i32 {
+                        (*page).vWrap = SP_ATLAS_REPEAT;
+                    }
+                } else if equals(&mut str, b"xy\0" as *const u8 as *const c_char) != 0 {
+                    (*page).uWrap = SP_ATLAS_REPEAT;
+                    (*page).vWrap = SP_ATLAS_REPEAT;
+                }
+            }
+            _spAtlasPage_createTexture(page, path);
+            _spFree(path as *mut c_void);
+        } else {
+            let mut region: *mut spAtlasRegion = spAtlasRegion_create();
+            if !lastRegion.is_null() {
+                (*lastRegion).next = region;
+            } else {
+                (*self_0).regions = region;
+            }
+            lastRegion = region;
+            (*region).page = page;
+            (*region).name = mallocString(&mut str);
+            if readValue(&mut begin, end, &mut str) == 0 {
+                return abortAtlas(self_0);
+            }
+            if equals(&mut str, b"true\0" as *const u8 as *const c_char) != 0 {
+                (*region).degrees = 90 as c_int;
+            } else if equals(&mut str, b"false\0" as *const u8 as *const c_char) != 0 {
+                (*region).degrees = 0 as c_int;
+            } else {
+                (*region).degrees = toInt(&mut str);
+            }
+            (*region).rotate = ((*region).degrees == 90 as c_int) as c_int;
+            if readTuple(&mut begin, end, tuple.as_mut_ptr()) != 2 as c_int {
+                return abortAtlas(self_0);
+            }
+            (*region).x = toInt(tuple.as_mut_ptr());
+            (*region).y = toInt(tuple.as_mut_ptr().offset(1 as c_int as isize));
+            if readTuple(&mut begin, end, tuple.as_mut_ptr()) != 2 as c_int {
+                return abortAtlas(self_0);
+            }
+            (*region).width = toInt(tuple.as_mut_ptr());
+            (*region).height = toInt(tuple.as_mut_ptr().offset(1 as c_int as isize));
+            (*region).u = (*region).x as c_float / (*page).width as c_float;
+            (*region).v = (*region).y as c_float / (*page).height as c_float;
+            if (*region).rotate != 0 {
+                (*region).u2 =
+                    ((*region).x + (*region).height) as c_float / (*page).width as c_float;
+                (*region).v2 =
+                    ((*region).y + (*region).width) as c_float / (*page).height as c_float;
+            } else {
+                (*region).u2 =
+                    ((*region).x + (*region).width) as c_float / (*page).width as c_float;
+                (*region).v2 =
+                    ((*region).y + (*region).height) as c_float / (*page).height as c_float;
+            }
+            count = readTuple(&mut begin, end, tuple.as_mut_ptr());
+            if count == 0 {
+                return abortAtlas(self_0);
+            }
+            if count == 4 as c_int {
+                (*region).splits = _spMalloc(
+                    (::core::mem::size_of::<c_int>() as c_ulong)
+                        .wrapping_mul(4 as c_int as c_ulong),
+                    b"spine.c\0" as *const u8 as *const c_char,
+                    3293 as c_int,
+                ) as *mut c_int;
+                *((*region).splits).offset(0 as c_int as isize) = toInt(tuple.as_mut_ptr());
+                *((*region).splits).offset(1 as c_int as isize) =
+                    toInt(tuple.as_mut_ptr().offset(1 as c_int as isize));
+                *((*region).splits).offset(2 as c_int as isize) =
+                    toInt(tuple.as_mut_ptr().offset(2 as c_int as isize));
+                *((*region).splits).offset(3 as c_int as isize) =
+                    toInt(tuple.as_mut_ptr().offset(3 as c_int as isize));
+                count = readTuple(&mut begin, end, tuple.as_mut_ptr());
+                if count == 0 {
+                    return abortAtlas(self_0);
+                }
+                if count == 4 as c_int {
+                    (*region).pads = _spMalloc(
+                        (::core::mem::size_of::<c_int>() as c_ulong)
+                            .wrapping_mul(4 as c_int as c_ulong),
+                        b"spine.c\0" as *const u8 as *const c_char,
+                        3302 as c_int,
+                    ) as *mut c_int;
+                    *((*region).pads).offset(0 as c_int as isize) = toInt(tuple.as_mut_ptr());
+                    *((*region).pads).offset(1 as c_int as isize) =
+                        toInt(tuple.as_mut_ptr().offset(1 as c_int as isize));
+                    *((*region).pads).offset(2 as c_int as isize) =
+                        toInt(tuple.as_mut_ptr().offset(2 as c_int as isize));
+                    *((*region).pads).offset(3 as c_int as isize) =
+                        toInt(tuple.as_mut_ptr().offset(3 as c_int as isize));
+                    if readTuple(&mut begin, end, tuple.as_mut_ptr()) == 0 {
+                        return abortAtlas(self_0);
+                    }
+                }
+            }
+            (*region).originalWidth = toInt(tuple.as_mut_ptr());
+            (*region).originalHeight = toInt(tuple.as_mut_ptr().offset(1 as c_int as isize));
+            readTuple(&mut begin, end, tuple.as_mut_ptr());
+            (*region).offsetX = toInt(tuple.as_mut_ptr());
+            (*region).offsetY = toInt(tuple.as_mut_ptr().offset(1 as c_int as isize));
+            if readValue(&mut begin, end, &mut str) == 0 {
+                return abortAtlas(self_0);
+            }
+            (*region).index = toInt(&mut str);
+        }
+    }
+    return self_0;
+}
+
+struct FileOrFolder {
+    pub path: String,
+    pub is_dir: bool,
+    pub children: Vec<FileOrFolder>,
+}
+
+fn get_files_in_dir_internal(dir: &str, max_depth: u32, depth: u32) -> Vec<FileOrFolder> {
+    let dir = std::path::Path::new(dir);
+    let mut files = vec![];
+
+    if !dir.is_dir() {
+        return vec![];
+    }
+
+    let entries = dir.read_dir();
+    if let Ok(entries) = entries {
+        for entry in entries {
+            if let Ok(entry) = entry {
+                let path_buff = entry.path();
+                let path = path_buff.to_string_lossy().into_owned();
+
+                let mut file = FileOrFolder {
+                    path: path.clone(),
+                    is_dir: false,
+                    children: vec![],
+                };
+
+                if path_buff.is_dir() {
+                    file.is_dir = true;
+                    // depth limit
+                    if depth < max_depth {
+                        file.children = get_files_in_dir_internal(&path, max_depth, depth + 1);
+                    }
+                }
+
+                files.push(file);
+            } else {
+                println!("file not found: {:?}", entry);
+            }
+        }
+    } else {
+        println!("Read dir error: {:?}", entries);
+    }
+
+    files
+}
+
+pub unsafe extern "C" fn spAtlas_create_from_folder(dir: &String) -> *mut spAtlas {
+    let dir_path = std::path::Path::new(dir);
+
+    let self_0 = _spCalloc(
+        1 as c_int as size_t,
+        ::core::mem::size_of::<spAtlas>() as c_ulong,
+        b"spine.c\0" as *const u8 as *const c_char,
+        3198 as c_int,
+    ) as *mut spAtlas;
+    (*self_0).rendererObject = std::ptr::null_mut();
+
+    if !(dir_path.exists() && dir_path.is_dir()) {
+        return abortAtlas(self_0);
+    }
+
+    let build_paths: Vec<FileOrFolder> = get_files_in_dir_internal(dir, 2, 0);
+    build_paths.iter().for_each(|build_path| {
+        build_path.children.iter().for_each(|symbol_path| {
+            symbol_path.children.iter().for_each(|frame_path| {
+                let frame_path = frame_path.path.clone();
+                println!("test: {}", frame_path);
+            })
+        })
+    });
+
+    self_0
+}
+
 pub unsafe extern "C" fn spAtlas_create_empty() -> *mut spAtlas {
     let mut self_0: *mut spAtlas = 0 as *mut spAtlas;
     self_0 = _spCalloc(
@@ -20390,19 +20675,19 @@ pub unsafe extern "C" fn spAttachmentLoader_create_empty() -> *mut spAttachmentL
     _spAttachmentLoader_init(
         &mut (*self_0).super_0,
         Some(_spAttachmentLoader_deinit as unsafe extern "C" fn(*mut spAttachmentLoader) -> ()),
-        // Some(
-        //     _spAtlasAttachmentLoader_createAttachment
-        //         as unsafe extern "C" fn(
-        //             *mut spAttachmentLoader,
-        //             *mut spSkin,
-        //             spAttachmentType,
-        //             *const c_char,
-        //             *const c_char,
-        //         ) -> *mut spAttachment,
-        // ),
+        Some(
+            _spAtlasAttachmentLoader_createAttachment
+                as unsafe extern "C" fn(
+                    *mut spAttachmentLoader,
+                    *mut spSkin,
+                    spAttachmentType,
+                    *const c_char,
+                    *const c_char,
+                ) -> *mut spAttachment,
+        ),
         None,
         None,
-        None,
+        // None,
     );
 
     let atlas = spAtlas_create_empty();
