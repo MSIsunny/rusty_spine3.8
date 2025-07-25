@@ -20390,16 +20390,17 @@ pub unsafe extern "C" fn spAttachmentLoader_create_empty() -> *mut spAttachmentL
     _spAttachmentLoader_init(
         &mut (*self_0).super_0,
         Some(_spAttachmentLoader_deinit as unsafe extern "C" fn(*mut spAttachmentLoader) -> ()),
-        Some(
-            _spAtlasAttachmentLoader_createAttachment
-                as unsafe extern "C" fn(
-                    *mut spAttachmentLoader,
-                    *mut spSkin,
-                    spAttachmentType,
-                    *const c_char,
-                    *const c_char,
-                ) -> *mut spAttachment,
-        ),
+        // Some(
+        //     _spAtlasAttachmentLoader_createAttachment
+        //         as unsafe extern "C" fn(
+        //             *mut spAttachmentLoader,
+        //             *mut spSkin,
+        //             spAttachmentType,
+        //             *const c_char,
+        //             *const c_char,
+        //         ) -> *mut spAttachment,
+        // ),
+        None,
         None,
         None,
     );
