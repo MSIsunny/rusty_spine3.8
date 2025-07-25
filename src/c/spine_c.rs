@@ -20642,7 +20642,10 @@ pub unsafe extern "C" fn spAtlas_create_from_folder(dir: &String) -> *mut spAtla
                     lastRegion = region;
                     (*region).page = page;
 
-                    (*region).name = name.as_ptr();
+                    let region_name = frame_path.split_once(dir).unwrap().1.to_string();
+                    let region_name = std::ffi::CString::new(region_name).unwrap();
+
+                    (*region).name = region_name.as_ptr();
 
                     let img = image::open(&frame_path).unwrap();
                     let (width, height) = img.dimensions();
