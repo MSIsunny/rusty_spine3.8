@@ -20360,6 +20360,10 @@ pub unsafe extern "C" fn spAttachmentLoader_create_empty() -> *mut spAttachmentL
         None,
         None,
     );
+
+    let mut atlas: *mut spAtlas = 0 as *mut spAtlas;
+    (*self_0).atlas = atlas;
+
     let attachment_loader = &mut (*self_0).super_0 as *mut spAttachmentLoader;
     return attachment_loader;
 }
