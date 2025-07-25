@@ -20337,18 +20337,40 @@ pub use crate::c::environment::types::*;
 
 // ---------------------------------------------------------------------------
 
+// #[no_mangle]
+// pub unsafe extern "C" fn spSkeletonJson_createWithLoader(
+//     mut attachmentLoader: *mut spAttachmentLoader,
+// ) -> *mut spSkeletonJson {
+//     let mut self_0: *mut spSkeletonJson = &mut (*((_spCalloc
+//         as unsafe extern "C" fn(size_t, size_t, *const c_char, c_int) -> *mut c_void)(
+//         1 as c_int as size_t,
+//         ::core::mem::size_of::<_spSkeletonJson>() as c_ulong,
+//         b"spine.c\0" as *const u8 as *const c_char,
+//         8566 as c_int,
+//     ) as *mut _spSkeletonJson))
+//         .super_0;
+//     (*self_0).scale = 1 as c_int as c_float;
+//     (*self_0).attachmentLoader = attachmentLoader;
+//     return self_0;
+// }
+
 pub unsafe extern "C" fn spSkeletonJson_create_empty() -> *mut spSkeletonJson {
     let mut attachment_loader = spAttachmentLoader {
         error1: 0 as *const i8,
         error2: 0 as *const i8,
         vtable: 0 as *const c_void,
     };
-    let mut skeleton_json = spSkeletonJson {
-        scale: 1.0,
-        error: 0 as *const i8,
-        attachmentLoader: &mut attachment_loader as *mut spAttachmentLoader,
-    };
-    let self_0: *mut spSkeletonJson = &mut skeleton_json as *mut spSkeletonJson;
+
+    let mut self_0: *mut spSkeletonJson = &mut (*((_spCalloc
+        as unsafe extern "C" fn(size_t, size_t, *const c_char, c_int) -> *mut c_void)(
+        1 as c_int as size_t,
+        ::core::mem::size_of::<_spSkeletonJson>() as c_ulong,
+        b"spine.c\0" as *const u8 as *const c_char,
+        8566 as c_int,
+    ) as *mut _spSkeletonJson))
+        .super_0;
+    (*self_0).scale = 1 as c_int as c_float;
+    (*self_0).attachmentLoader = &mut attachment_loader as *mut spAttachmentLoader;
     return self_0;
 }
 
