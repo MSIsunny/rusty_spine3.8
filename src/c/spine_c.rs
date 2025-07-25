@@ -20337,29 +20337,35 @@ pub use crate::c::environment::types::*;
 
 // ---------------------------------------------------------------------------
 
-// #[no_mangle]
-// pub unsafe extern "C" fn spSkeletonJson_createWithLoader(
-//     mut attachmentLoader: *mut spAttachmentLoader,
-// ) -> *mut spSkeletonJson {
-//     let mut self_0: *mut spSkeletonJson = &mut (*((_spCalloc
-//         as unsafe extern "C" fn(size_t, size_t, *const c_char, c_int) -> *mut c_void)(
-//         1 as c_int as size_t,
-//         ::core::mem::size_of::<_spSkeletonJson>() as c_ulong,
-//         b"spine.c\0" as *const u8 as *const c_char,
-//         8566 as c_int,
-//     ) as *mut _spSkeletonJson))
-//         .super_0;
-//     (*self_0).scale = 1 as c_int as c_float;
-//     (*self_0).attachmentLoader = attachmentLoader;
-//     return self_0;
-// }
+pub unsafe extern "C" fn spAttachmentLoader_create_empty() -> *mut spAttachmentLoader {
+    let mut self_0: *mut spAtlasAttachmentLoader = _spCalloc(
+        1 as c_int as size_t,
+        ::core::mem::size_of::<spAtlasAttachmentLoader>() as c_ulong,
+        b"spine.c\0" as *const u8 as *const c_char,
+        3475 as c_int,
+    ) as *mut spAtlasAttachmentLoader;
+    _spAttachmentLoader_init(
+        &mut (*self_0).super_0,
+        Some(_spAttachmentLoader_deinit as unsafe extern "C" fn(*mut spAttachmentLoader) -> ()),
+        Some(
+            _spAtlasAttachmentLoader_createAttachment
+                as unsafe extern "C" fn(
+                    *mut spAttachmentLoader,
+                    *mut spSkin,
+                    spAttachmentType,
+                    *const c_char,
+                    *const c_char,
+                ) -> *mut spAttachment,
+        ),
+        None,
+        None,
+    );
+    let attachment_loader = &mut (*self_0).super_0 as *mut spAttachmentLoader;
+    return attachment_loader;
+}
 
 pub unsafe extern "C" fn spSkeletonJson_create_empty() -> *mut spSkeletonJson {
-    let mut attachment_loader = spAttachmentLoader {
-        error1: 0 as *const i8,
-        error2: 0 as *const i8,
-        vtable: 0 as *const c_void,
-    };
+    let mut attachment_loader = spAttachmentLoader_create_empty();
 
     let mut self_0: *mut spSkeletonJson = &mut (*((_spCalloc
         as unsafe extern "C" fn(size_t, size_t, *const c_char, c_int) -> *mut c_void)(
@@ -20370,7 +20376,7 @@ pub unsafe extern "C" fn spSkeletonJson_create_empty() -> *mut spSkeletonJson {
     ) as *mut _spSkeletonJson))
         .super_0;
     (*self_0).scale = 1 as c_int as c_float;
-    (*self_0).attachmentLoader = &mut attachment_loader as *mut spAttachmentLoader;
+    (*self_0).attachmentLoader = attachment_loader;
     return self_0;
 }
 
