@@ -20375,7 +20375,7 @@ pub unsafe extern "C" fn spAtlas_create_empty() -> *mut spAtlas {
     (*region).originalHeight = 1;
     (*region).offsetX = 0;
     (*region).offsetY = 0;
-    (*region).index = toInt(&mut str);
+    (*region).index = 0;
 
     return self_0;
 }
