@@ -20353,10 +20353,29 @@ pub unsafe extern "C" fn spAtlas_create_empty() -> *mut spAtlas {
         end: 0 as *const c_char,
     };
     let mut name: *mut c_char = mallocString(&mut str);
-    (*self_0).pages = spAtlasPage_create(self_0, name);
+    let page = spAtlasPage_create(self_0, name);
+    (*self_0).pages = page;
 
     let mut region: *mut spAtlasRegion = spAtlasRegion_create();
     (*self_0).regions = region;
+
+    (*region).page = page;
+    (*region).name = mallocString(&mut str);
+    (*region).degrees = 0 as c_int;
+    (*region).rotate = ((*region).degrees == 90 as c_int) as c_int;
+    (*region).x = 0;
+    (*region).y = 0;
+    (*region).width = 1;
+    (*region).height = 1;
+    (*region).u = 0.0;
+    (*region).v = 0.0;
+    (*region).u2 = 1.0;
+    (*region).v2 = 1.0;
+    (*region).originalWidth = 1;
+    (*region).originalHeight = 1;
+    (*region).offsetX = 0;
+    (*region).offsetY = 0;
+    (*region).index = toInt(&mut str);
 
     return self_0;
 }
