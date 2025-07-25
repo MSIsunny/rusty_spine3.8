@@ -7681,12 +7681,22 @@ pub unsafe extern "C" fn _spAtlasAttachmentLoader_createAttachment(
             let mut attachment: *mut spRegionAttachment = 0 as *mut spRegionAttachment;
             let mut region: *mut spAtlasRegion = spAtlas_findRegion((*self_0).atlas, path);
             if region.is_null() {
-                _spAttachmentLoader_setError(
-                    loader,
-                    b"Region not found: \0" as *const u8 as *const c_char,
-                    path,
-                );
-                return 0 as *mut spAttachment;
+                // _spAttachmentLoader_setError(
+                //     loader,
+                //     b"Region not found: \0" as *const u8 as *const c_char,
+                //     path,
+                // );
+                // return 0 as *mut spAttachment;
+                attachment = spRegionAttachment_create(name);
+                (*attachment).rendererObject = std::ptr::null_mut();
+                spRegionAttachment_setUVs(attachment, 0.0, 0.0, 1.0, 1.0, 0);
+                (*attachment).regionOffsetX = 0;
+                (*attachment).regionOffsetY = 0;
+                (*attachment).regionWidth = 1;
+                (*attachment).regionHeight = 1;
+                (*attachment).regionOriginalWidth = 1;
+                (*attachment).regionOriginalHeight = 1;
+                return &mut (*attachment).super_0;
             }
             attachment = spRegionAttachment_create(name);
             (*attachment).rendererObject = region as *mut c_void;
@@ -20596,10 +20606,16 @@ fn get_files_in_dir_internal(dir: &str, max_depth: u32, depth: u32) -> Vec<FileO
 
 fn handle_region_name(frame_path: &str) -> String {
     // 返回值应该为builds/build_name/symbol_name/frame_name
-    let builds_index = frame_path.find("builds/").unwrap();
-    let name = &frame_path[builds_index..];
+    let mut name = frame_path;
+    loop {
+        let builds_index = name.find("builds/").unwrap_or(0);
+        let region_name = &name[builds_index..];
+        if region_name == name {
+            break;
+        }
+        name = region_name;
+    }
     let name = name.replace(".png", "");
-    println!("region name: {}", name);
     name.to_string()
 }
 
@@ -20632,8 +20648,9 @@ pub unsafe extern "C" fn spAtlas_create_from_folder(dir: &String) -> *mut spAtla
                 let frame_path = frame_path.path.clone();
                 // println!("test: {}", frame_path);
                 if frame_path.ends_with(".png") {
-                    let name = std::ffi::CString::new(frame_path.clone()).unwrap();
-                    let page = spAtlasPage_create(self_0, name.as_ptr());
+                    let region_name = handle_region_name(&frame_path);
+                    let region_name = std::ffi::CString::new(region_name).unwrap();
+                    let page = spAtlasPage_create(self_0, region_name.as_ptr());
 
                     if !lastPage.is_null() {
                         (*lastPage).next = page;
@@ -20650,9 +20667,6 @@ pub unsafe extern "C" fn spAtlas_create_from_folder(dir: &String) -> *mut spAtla
                     }
                     lastRegion = region;
                     (*region).page = page;
-
-                    let region_name = handle_region_name(&frame_path);
-                    let region_name = std::ffi::CString::new(region_name).unwrap();
 
                     (*region).name = region_name.as_ptr();
 
