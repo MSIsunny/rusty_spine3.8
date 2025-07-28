@@ -17211,8 +17211,12 @@ pub unsafe extern "C" fn spSkeletonJson_readSkeletonData(
             {
                 (*skeletonData).defaultSkin = skin;
             }
-            attachmentsMap =
-                (*Json_getItem(skinMap, b"attachments\0" as *const u8 as *const c_char)).child;
+            let attachments = Json_getItem(skinMap, b"attachments\0" as *const u8 as *const c_char);
+            if !attachments.is_null() {
+                attachmentsMap = (*attachments).child;
+            }
+            // attachmentsMap =
+            //     (*Json_getItem(skinMap, b"attachments\0" as *const u8 as *const c_char)).child;
             while !attachmentsMap.is_null() {
                 let mut slot: *mut spSlotData =
                     spSkeletonData_findSlot(skeletonData, (*attachmentsMap).name);
