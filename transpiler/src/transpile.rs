@@ -178,32 +178,32 @@ pub fn c_run_preprocessor(input: &str, output: &str) {
 
 pub fn c_fixes_after_preprocessor(input: &str, output: &str) {
     let mut src = read_to_string(input).unwrap();
-    src = replace_identifier(src, "memmove", "spine_memmove", 0);
+    src = replace_identifier(src, "memmove", "spine38_memmove", 0);
     src = replace_identifier(src, "strlen", "spine38_strlen", 0);
-    src = replace_identifier(src, "memcpy", "spine_memcpy", 0);
-    src = replace_identifier(src, "memset", "spine_memset", 0);
+    src = replace_identifier(src, "memcpy", "spine38_memcpy", 0);
+    src = replace_identifier(src, "memset", "spine38_memset", 0);
     src = replace_identifier(src, "strcpy", "spine38_strcpy", 0);
     src = replace_identifier(src, "strcmp", "spine38_strcmp", 0);
     src = replace_identifier(src, "strrchr", "spine38_strrchr", 0);
-    src = replace_identifier(src, "sqrtf", "spine_sqrtf", 0);
+    src = replace_identifier(src, "sqrtf", "spine38_sqrtf", 0);
     src = replace_identifier(src, "strcasecmp", "spine38_strcasecmp", 0);
     src = replace_identifier(src, "strncmp", "spine38_strncmp", 0);
     src = replace_identifier(src, "strncat", "spine38_strncat", 0);
-    src = replace_identifier(src, "malloc", "spine_malloc", 0);
-    src = replace_identifier(src, "realloc", "spine_realloc", 0);
-    src = replace_identifier(src, "free", "spine_free", 0);
+    src = replace_identifier(src, "malloc", "spine38_malloc", 0);
+    src = replace_identifier(src, "realloc", "spine38_realloc", 0);
+    src = replace_identifier(src, "free", "spine38_free", 0);
     src = replace_identifier(src, "strtol", "spine38_strtol", 0);
     src = replace_identifier(src, "sprintf", "spine_sprintf", 0);
     src = replace_identifier(src, "printf", "spine_printf", 0);
     src = replace_identifier(src, "sscanf", "spine_sscanf", 0);
     src = replace_identifier(src, "strtoul", "spine38_strtoul", 0);
-    src = replace_identifier(src, "rand", "spine_rand", 0);
-    src = replace_identifier(src, "fopen", "spine_fopen", 0);
-    src = replace_identifier(src, "fseek", "spine_fseek", 0);
-    src = replace_identifier(src, "ftell", "spine_ftell", 0);
-    src = replace_identifier(src, "fread", "spine_fread", 0);
-    src = replace_identifier(src, "fclose", "spine_fclose", 0);
-    src = replace_identifier(src, "fclose", "spine_fclose", 0);
+    src = replace_identifier(src, "rand", "spine38_rand", 0);
+    src = replace_identifier(src, "fopen", "spine38_fopen", 0);
+    src = replace_identifier(src, "fseek", "spine38_fseek", 0);
+    src = replace_identifier(src, "ftell", "spine38_ftell", 0);
+    src = replace_identifier(src, "fread", "spine38_fread", 0);
+    src = replace_identifier(src, "fclose", "spine38_fclose", 0);
+    src = replace_identifier(src, "fclose", "spine38_fclose", 0);
     write(output, src).unwrap();
 }
 

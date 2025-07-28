@@ -113,7 +113,7 @@ impl Allocator {
         let new_memory = self.malloc(size);
         if !new_memory.is_null() {
             let layout = self.allocations.get(&ptr).unwrap();
-            spine_memcpy(new_memory, ptr, layout.size() as size_t);
+            spine38_memcpy(new_memory, ptr, layout.size() as size_t);
         }
         self.free(ptr);
         new_memory
@@ -826,59 +826,59 @@ pub unsafe extern "C" fn spine38_strrchr(mut p: *const c_char, ch: c_int) -> *mu
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_rand() -> c_int {
+unsafe extern "C" fn spine38_rand() -> c_int {
     unimplemented!();
 }
 
 #[no_mangle]
-extern "C" fn spine_sqrtf(x: c_float) -> c_float {
+extern "C" fn spine38_sqrtf(x: c_float) -> c_float {
     x.sqrt()
 }
 
 #[no_mangle]
-extern "C" fn spine_ceil(x: c_double) -> c_double {
+extern "C" fn spine38_ceil(x: c_double) -> c_double {
     x.ceil()
 }
 
 #[no_mangle]
-extern "C" fn spine_acosf(x: c_float) -> c_float {
+extern "C" fn spine38_acosf(x: c_float) -> c_float {
     x.acos()
 }
 
 #[no_mangle]
-extern "C" fn spine_atan2f(x: c_float, y: c_float) -> c_float {
+extern "C" fn spine38_atan2f(x: c_float, y: c_float) -> c_float {
     x.atan2(y)
 }
 
 #[no_mangle]
-extern "C" fn spine_cosf(x: c_float) -> c_float {
+extern "C" fn spine38_cosf(x: c_float) -> c_float {
     x.cos()
 }
 
 #[no_mangle]
-extern "C" fn spine_sinf(x: c_float) -> c_float {
+extern "C" fn spine38_sinf(x: c_float) -> c_float {
     x.sin()
 }
 
 #[no_mangle]
-extern "C" fn spine_pow(x: c_double, y: c_double) -> c_double {
+extern "C" fn spine38_pow(x: c_double, y: c_double) -> c_double {
     x.powf(y)
 }
 
 #[no_mangle]
-extern "C" fn spine_fmodf(x: c_float, y: c_float) -> c_float {
+extern "C" fn spine38_fmodf(x: c_float, y: c_float) -> c_float {
     x % y
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_malloc(size: size_t) -> *mut c_void {
+unsafe extern "C" fn spine38_malloc(size: size_t) -> *mut c_void {
     let singleton = Allocator::singleton();
     let mut allocator = singleton.lock().unwrap();
     allocator.malloc(size as usize)
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_realloc(ptr: *mut c_void, size: size_t) -> *mut c_void {
+unsafe extern "C" fn spine38_realloc(ptr: *mut c_void, size: size_t) -> *mut c_void {
     if !ptr.is_null() {
         let singleton = Allocator::singleton();
         let mut allocator = singleton.lock().unwrap();
@@ -889,7 +889,7 @@ unsafe extern "C" fn spine_realloc(ptr: *mut c_void, size: size_t) -> *mut c_voi
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_free(ptr: *mut c_void) {
+unsafe extern "C" fn spine38_free(ptr: *mut c_void) {
     if !ptr.is_null() && ptr as usize != 1 {
         let singleton = Allocator::singleton();
         let mut allocator = singleton.lock().unwrap();
@@ -898,7 +898,7 @@ unsafe extern "C" fn spine_free(ptr: *mut c_void) {
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_memcpy(
+unsafe extern "C" fn spine38_memcpy(
     dst0: *mut c_void,
     src0: *const c_void,
     mut length: size_t,
@@ -975,7 +975,7 @@ unsafe extern "C" fn spine_memcpy(
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_memmove(
+unsafe extern "C" fn spine38_memmove(
     dst0: *mut c_void,
     src0: *const c_void,
     mut length: size_t,
@@ -1105,7 +1105,7 @@ unsafe extern "C" fn spine_memmove(
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_memset(s: *mut c_void, c: c_int, n: size_t) -> *mut c_void {
+unsafe extern "C" fn spine38_memset(s: *mut c_void, c: c_int, n: size_t) -> *mut c_void {
     for offset in 0..n {
         (*(s.cast::<u8>()).offset(offset as isize)) = c as u8;
     }
@@ -1113,17 +1113,17 @@ unsafe extern "C" fn spine_memset(s: *mut c_void, c: c_int, n: size_t) -> *mut c
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_fopen(_filename: *const c_char, _modes: *const c_char) -> *mut FILE {
+unsafe extern "C" fn spine38_fopen(_filename: *const c_char, _modes: *const c_char) -> *mut FILE {
     unimplemented!();
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_fclose(_stream: *mut FILE) -> c_int {
+unsafe extern "C" fn spine38_fclose(_stream: *mut FILE) -> c_int {
     unimplemented!();
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_fread(
+unsafe extern "C" fn spine38_fread(
     _ptr: *mut c_void,
     _size: size_t,
     _n: size_t,
@@ -1133,12 +1133,12 @@ unsafe extern "C" fn spine_fread(
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_fseek(_stream: *mut FILE, _off: c_long, _whence: c_int) -> c_int {
+unsafe extern "C" fn spine38_fseek(_stream: *mut FILE, _off: c_long, _whence: c_int) -> c_int {
     unimplemented!();
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_ftell(_stream: *mut FILE) -> c_long {
+unsafe extern "C" fn spine38_ftell(_stream: *mut FILE) -> c_long {
     unimplemented!();
 }
 

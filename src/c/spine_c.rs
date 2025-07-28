@@ -9,11 +9,11 @@
 )]
 extern "C" {
 
-    fn spine_memcpy(__dest: *mut c_void, __src: *const c_void, __n: size_t) -> *mut c_void;
-    fn spine_memmove(__dest: *mut c_void, __src: *const c_void, __n: size_t) -> *mut c_void;
+    fn spine38_memcpy(__dest: *mut c_void, __src: *const c_void, __n: size_t) -> *mut c_void;
+    fn spine38_memmove(__dest: *mut c_void, __src: *const c_void, __n: size_t) -> *mut c_void;
     fn acosf(_: c_float) -> c_float;
     fn atan2f(_: c_float, _: c_float) -> c_float;
-    fn spine_memset(__s: *mut c_void, __c: c_int, __n: size_t) -> *mut c_void;
+    fn spine38_memset(__s: *mut c_void, __c: c_int, __n: size_t) -> *mut c_void;
     fn cosf(_: c_float) -> c_float;
     fn sinf(_: c_float) -> c_float;
     fn spine38_strcasecmp(__s1: *const c_char, __s2: *const c_char) -> c_int;
@@ -22,7 +22,7 @@ extern "C" {
     fn spine38_strcmp(__s1: *const c_char, __s2: *const c_char) -> c_int;
     fn spine38_strncmp(__s1: *const c_char, __s2: *const c_char, __n: size_t) -> c_int;
     fn pow(_: c_double, _: c_double) -> c_double;
-    fn spine_sqrtf(__x: c_float) -> c_float;
+    fn spine38_sqrtf(__x: c_float) -> c_float;
     fn _sp38AtlasPage_createTexture(self_0: *mut spAtlasPage, path: *const c_char);
     fn _sp38AtlasPage_disposeTexture(self_0: *mut spAtlasPage);
     fn _spUtil_readFile(path: *const c_char, length: *mut c_int) -> *mut c_char;
@@ -30,19 +30,24 @@ extern "C" {
     fn spine38_strtol(__nptr: *const c_char, __endptr: *mut *mut c_char, __base: c_int) -> c_long;
     fn spine38_strtoul(__nptr: *const c_char, __endptr: *mut *mut c_char, __base: c_int)
         -> c_ulong;
-    fn spine_fclose(__stream: *mut FILE) -> c_int;
-    fn spine_fopen(__filename: *const c_char, __modes: *const c_char) -> *mut FILE;
+    fn spine38_fclose(__stream: *mut FILE) -> c_int;
+    fn spine38_fopen(__filename: *const c_char, __modes: *const c_char) -> *mut FILE;
     fn spine38_strrchr(__s: *const c_char, __c: c_int) -> *mut c_char;
 
     fn spine38_strlen(__s: *const c_char) -> size_t;
 
-    fn spine_rand() -> c_int;
-    fn spine_malloc(__size: size_t) -> *mut c_void;
-    fn spine_realloc(__ptr: *mut c_void, __size: size_t) -> *mut c_void;
-    fn spine_free(__ptr: *mut c_void);
-    fn spine_fread(__ptr: *mut c_void, __size: size_t, __n: size_t, __stream: *mut FILE) -> size_t;
-    fn spine_fseek(__stream: *mut FILE, __off: c_long, __whence: c_int) -> c_int;
-    fn spine_ftell(__stream: *mut FILE) -> c_long;
+    fn spine38_rand() -> c_int;
+    fn spine38_malloc(__size: size_t) -> *mut c_void;
+    fn spine38_realloc(__ptr: *mut c_void, __size: size_t) -> *mut c_void;
+    fn spine38_free(__ptr: *mut c_void);
+    fn spine38_fread(
+        __ptr: *mut c_void,
+        __size: size_t,
+        __n: size_t,
+        __stream: *mut FILE,
+    ) -> size_t;
+    fn spine38_fseek(__stream: *mut FILE, __off: c_long, __whence: c_int) -> c_int;
+    fn spine38_ftell(__stream: *mut FILE) -> c_long;
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -2950,7 +2955,7 @@ pub unsafe extern "C" fn _sp38DeformTimeline_apply(
                     }
                 }
             } else {
-                spine_memcpy(
+                spine38_memcpy(
                     deformArray as *mut c_void,
                     lastVertices as *const c_void,
                     (vertexCount as c_ulong)
@@ -3227,7 +3232,7 @@ pub unsafe extern "C" fn sp38DeformTimeline_setFrame(
             b"spine.c\0" as *const u8 as *const c_char,
             1150 as c_int,
         ) as *mut c_float;
-        spine_memcpy(
+        spine38_memcpy(
             *(&mut *((*self_0).frameVertices).offset(frameIndex as isize) as *mut *const c_float
                 as *mut *mut c_float) as *mut c_void,
             vertices as *const c_void,
@@ -3388,7 +3393,7 @@ pub unsafe extern "C" fn _sp38DrawOrderTimeline_apply(
     let mut self_0: *mut spDrawOrderTimeline = timeline as *mut spDrawOrderTimeline;
     if direction as c_uint == SP_MIX_DIRECTION_OUT as c_int as c_uint {
         if blend as c_uint == SP_MIX_BLEND_SETUP as c_int as c_uint {
-            spine_memcpy(
+            spine38_memcpy(
                 (*skeleton).drawOrder as *mut c_void,
                 (*skeleton).slots as *const c_void,
                 ((*self_0).slotsCount as c_ulong)
@@ -3401,7 +3406,7 @@ pub unsafe extern "C" fn _sp38DrawOrderTimeline_apply(
         if blend as c_uint == SP_MIX_BLEND_SETUP as c_int as c_uint
             || blend as c_uint == SP_MIX_BLEND_FIRST as c_int as c_uint
         {
-            spine_memcpy(
+            spine38_memcpy(
                 (*skeleton).drawOrder as *mut c_void,
                 (*skeleton).slots as *const c_void,
                 ((*self_0).slotsCount as c_ulong)
@@ -3417,7 +3422,7 @@ pub unsafe extern "C" fn _sp38DrawOrderTimeline_apply(
     }
     drawOrderToSetupIndex = *((*self_0).drawOrders).offset(frame as isize);
     if drawOrderToSetupIndex.is_null() {
-        spine_memcpy(
+        spine38_memcpy(
             (*skeleton).drawOrder as *mut c_void,
             (*skeleton).slots as *const c_void,
             ((*self_0).slotsCount as c_ulong)
@@ -3526,7 +3531,7 @@ pub unsafe extern "C" fn sp38DrawOrderTimeline_setFrame(
             b"spine.c\0" as *const u8 as *const c_char,
             1303 as c_int,
         ) as *mut c_int;
-        spine_memcpy(
+        spine38_memcpy(
             *(&mut *((*self_0).drawOrders).offset(frameIndex as isize) as *mut *const c_int
                 as *mut *mut c_int) as *mut c_void,
             drawOrder as *const c_void,
@@ -4415,7 +4420,7 @@ pub unsafe extern "C" fn sp38TrackEntryArray_removeAt(
     mut index: c_int,
 ) {
     (*self_0).size -= 1;
-    spine_memmove(
+    spine38_memmove(
         ((*self_0).items).offset(index as isize) as *mut c_void,
         ((*self_0).items)
             .offset(index as isize)
@@ -4505,7 +4510,7 @@ pub unsafe extern "C" fn _sp38EventQueue_ensureCapacity(
             b"spine.c\0" as *const u8 as *const c_char,
             1859 as c_int,
         ) as *mut _spEventQueueItem;
-        spine_memcpy(
+        spine38_memcpy(
             newObjects as *mut c_void,
             (*self_0).objects as *const c_void,
             (::core::mem::size_of::<_spEventQueueItem>() as c_ulong)
@@ -5872,7 +5877,7 @@ pub unsafe extern "C" fn _sp38AnimationState_expandToIndex(
         b"spine.c\0" as *const u8 as *const c_char,
         2646 as c_int,
     ) as *mut *mut spTrackEntry;
-    spine_memcpy(
+    spine38_memcpy(
         newTracks as *mut c_void,
         (*self_0).tracks as *const c_void,
         ((*self_0).tracksCount as c_ulong)
@@ -6002,7 +6007,7 @@ pub unsafe extern "C" fn _sp38AnimationState_ensureCapacityPropertyIDs(
             b"spine.c\0" as *const u8 as *const c_char,
             2733 as c_int,
         ) as *mut c_int;
-        spine_memcpy(
+        spine38_memcpy(
             newPropertyIDs as *mut c_void,
             (*internal).propertyIDs as *const c_void,
             (::core::mem::size_of::<c_int>() as c_ulong)
@@ -6403,7 +6408,7 @@ pub unsafe extern "C" fn sp38FloatArray_addAllValues(
 #[no_mangle]
 pub unsafe extern "C" fn sp38FloatArray_removeAt(mut self_0: *mut spFloatArray, mut index: c_int) {
     (*self_0).size -= 1;
-    spine_memmove(
+    spine38_memmove(
         ((*self_0).items).offset(index as isize) as *mut c_void,
         ((*self_0).items)
             .offset(index as isize)
@@ -6547,7 +6552,7 @@ pub unsafe extern "C" fn sp38IntArray_addAllValues(
 #[no_mangle]
 pub unsafe extern "C" fn sp38IntArray_removeAt(mut self_0: *mut spIntArray, mut index: c_int) {
     (*self_0).size -= 1;
-    spine_memmove(
+    spine38_memmove(
         ((*self_0).items).offset(index as isize) as *mut c_void,
         ((*self_0).items)
             .offset(index as isize)
@@ -6691,7 +6696,7 @@ pub unsafe extern "C" fn sp38ShortArray_addAllValues(
 #[no_mangle]
 pub unsafe extern "C" fn sp38ShortArray_removeAt(mut self_0: *mut spShortArray, mut index: c_int) {
     (*self_0).size -= 1;
-    spine_memmove(
+    spine38_memmove(
         ((*self_0).items).offset(index as isize) as *mut c_void,
         ((*self_0).items)
             .offset(index as isize)
@@ -6843,7 +6848,7 @@ pub unsafe extern "C" fn sp38UnsignedShortArray_removeAt(
     mut index: c_int,
 ) {
     (*self_0).size -= 1;
-    spine_memmove(
+    spine38_memmove(
         ((*self_0).items).offset(index as isize) as *mut c_void,
         ((*self_0).items)
             .offset(index as isize)
@@ -7001,7 +7006,7 @@ pub unsafe extern "C" fn sp38ArrayFloatArray_removeAt(
     mut index: c_int,
 ) {
     (*self_0).size -= 1;
-    spine_memmove(
+    spine38_memmove(
         ((*self_0).items).offset(index as isize) as *mut c_void,
         ((*self_0).items)
             .offset(index as isize)
@@ -7159,7 +7164,7 @@ pub unsafe extern "C" fn sp38ArrayShortArray_removeAt(
     mut index: c_int,
 ) {
     (*self_0).size -= 1;
-    spine_memmove(
+    spine38_memmove(
         ((*self_0).items).offset(index as isize) as *mut c_void,
         ((*self_0).items)
             .offset(index as isize)
@@ -7348,7 +7353,7 @@ unsafe extern "C" fn mallocString(mut str: *mut Str) -> *mut c_char {
         b"spine.c\0" as *const u8 as *const c_char,
         3153 as c_int,
     ) as *mut c_char;
-    spine_memcpy(
+    spine38_memcpy(
         string as *mut c_void,
         (*str).begin as *const c_void,
         length as size_t,
@@ -7458,7 +7463,7 @@ pub unsafe extern "C" fn sp38Atlas_create(
                 b"spine.c\0" as *const u8 as *const c_char,
                 3206 as c_int,
             ) as *mut c_char;
-            spine_memcpy(
+            spine38_memcpy(
                 path as *mut c_void,
                 dir as *const c_void,
                 dirLength as size_t,
@@ -7652,7 +7657,7 @@ pub unsafe extern "C" fn sp38Atlas_createFromFile(
         b"spine.c\0" as *const u8 as *const c_char,
         3341 as c_int,
     ) as *mut c_char;
-    spine_memcpy(
+    spine38_memcpy(
         dir as *mut c_void,
         path as *const c_void,
         dirLength as size_t,
@@ -8218,13 +8223,13 @@ pub unsafe extern "C" fn sp38Bone_updateWorldTransformWith(
             sine = sinf(rotation * (3.1415926535897932385f32 / 180 as c_int as c_float));
             za = (pa * cosine + pb * sine) / sx;
             zc = (pc * cosine + pd * sine) / sy;
-            s_0 = spine_sqrtf(za * za + zc * zc);
+            s_0 = spine38_sqrtf(za * za + zc * zc);
             if s_0 > 0.00001f32 {
                 s_0 = 1 as c_int as c_float / s_0;
             }
             za *= s_0;
             zc *= s_0;
-            s_0 = spine_sqrtf(za * za + zc * zc);
+            s_0 = spine38_sqrtf(za * za + zc * zc);
             if (*(*self_0).data).transformMode as c_uint
                 == SP_TRANSFORMMODE_NOSCALE as c_int as c_uint
                 && (pa * pd - pb * pc < 0 as c_int as c_float) as c_int
@@ -8278,11 +8283,11 @@ pub unsafe extern "C" fn sp38Bone_getWorldRotationY(mut self_0: *mut spBone) -> 
 }
 #[no_mangle]
 pub unsafe extern "C" fn sp38Bone_getWorldScaleX(mut self_0: *mut spBone) -> c_float {
-    return spine_sqrtf((*self_0).a * (*self_0).a + (*self_0).c * (*self_0).c);
+    return spine38_sqrtf((*self_0).a * (*self_0).a + (*self_0).c * (*self_0).c);
 }
 #[no_mangle]
 pub unsafe extern "C" fn sp38Bone_getWorldScaleY(mut self_0: *mut spBone) -> c_float {
-    return spine_sqrtf((*self_0).b * (*self_0).b + (*self_0).d * (*self_0).d);
+    return spine38_sqrtf((*self_0).b * (*self_0).b + (*self_0).d * (*self_0).d);
 }
 #[no_mangle]
 pub unsafe extern "C" fn sp38Bone_updateAppliedTransform(mut self_0: *mut spBone) {
@@ -8293,8 +8298,8 @@ pub unsafe extern "C" fn sp38Bone_updateAppliedTransform(mut self_0: *mut spBone
         (*self_0).ay = (*self_0).worldY;
         (*self_0).arotation =
             atan2f((*self_0).c, (*self_0).a) * (180 as c_int as c_float / 3.1415926535897932385f32);
-        (*self_0).ascaleX = spine_sqrtf((*self_0).a * (*self_0).a + (*self_0).c * (*self_0).c);
-        (*self_0).ascaleY = spine_sqrtf((*self_0).b * (*self_0).b + (*self_0).d * (*self_0).d);
+        (*self_0).ascaleX = spine38_sqrtf((*self_0).a * (*self_0).a + (*self_0).c * (*self_0).c);
+        (*self_0).ascaleY = spine38_sqrtf((*self_0).b * (*self_0).b + (*self_0).d * (*self_0).d);
         (*self_0).ashearX = 0 as c_int as c_float;
         (*self_0).ashearY = atan2f(
             (*self_0).a * (*self_0).b + (*self_0).c * (*self_0).d,
@@ -8319,7 +8324,7 @@ pub unsafe extern "C" fn sp38Bone_updateAppliedTransform(mut self_0: *mut spBone
         (*self_0).ax = dx * pd * pid - dy * pb * pid;
         (*self_0).ay = dy * pa * pid - dx * pc * pid;
         (*self_0).ashearX = 0 as c_int as c_float;
-        (*self_0).ascaleX = spine_sqrtf(ra * ra + rc * rc);
+        (*self_0).ascaleX = spine38_sqrtf(ra * ra + rc * rc);
         if (*self_0).ascaleX > 0.0001f32 {
             let mut det: c_float = ra * rd - rb * rc;
             (*self_0).ascaleY = det / (*self_0).ascaleX;
@@ -8329,7 +8334,7 @@ pub unsafe extern "C" fn sp38Bone_updateAppliedTransform(mut self_0: *mut spBone
                 atan2f(rc, ra) * (180 as c_int as c_float / 3.1415926535897932385f32);
         } else {
             (*self_0).ascaleX = 0 as c_int as c_float;
-            (*self_0).ascaleY = spine_sqrtf(rb * rb + rd * rd);
+            (*self_0).ascaleY = spine38_sqrtf(rb * rb + rd * rd);
             (*self_0).ashearY = 0 as c_int as c_float;
             (*self_0).arotation = 90 as c_int as c_float
                 - atan2f(rd, rb) * (180 as c_int as c_float / 3.1415926535897932385f32);
@@ -8811,7 +8816,7 @@ pub unsafe extern "C" fn sp38IkConstraint_apply1(
             _ => {}
         }
         b = (*(*bone).data).length * sx;
-        dd = spine_sqrtf(tx * tx + ty * ty);
+        dd = spine38_sqrtf(tx * tx + ty * ty);
         if compress != 0 && dd < b || stretch != 0 && dd > b && b > 0.0001f32 {
             s = (dd / b - 1 as c_int as c_float) * alpha + 1 as c_int as c_float;
             sx *= s;
@@ -8940,7 +8945,7 @@ pub unsafe extern "C" fn sp38IkConstraint_apply2(
     y = cwy - (*pp).worldY;
     dx = (x * d - y * b) * id - px;
     dy = (y * a - x * c) * id - py;
-    l1 = spine_sqrtf(dx * dx + dy * dy);
+    l1 = spine38_sqrtf(dx * dx + dy * dy);
     l2 = (*(*child).data).length * csx;
     if (l1 as c_double) < 0.0001f64 {
         sp38IkConstraint_apply1(
@@ -8965,7 +8970,7 @@ pub unsafe extern "C" fn sp38IkConstraint_apply2(
     dd = tx * tx + ty * ty;
     if softness != 0 as c_int as c_float {
         softness *= psx * (csx + 1 as c_int as c_float) / 2 as c_int as c_float;
-        td = spine_sqrtf(dd);
+        td = spine38_sqrtf(dd);
         sd = td - l1 - l2 * psx + softness;
         if sd > 0 as c_int as c_float {
             p = (if (1 as c_int as c_float) < sd / (softness * 2 as c_int as c_float) {
@@ -8988,7 +8993,7 @@ pub unsafe extern "C" fn sp38IkConstraint_apply2(
         } else if cosine > 1 as c_int as c_float {
             cosine = 1 as c_int as c_float;
             if stretch != 0 {
-                sx *= (spine_sqrtf(dd) / (l1 + l2) - 1 as c_int as c_float) * alpha
+                sx *= (spine38_sqrtf(dd) / (l1 + l2) - 1 as c_int as c_float) * alpha
                     + 1 as c_int as c_float;
             }
         }
@@ -9008,7 +9013,7 @@ pub unsafe extern "C" fn sp38IkConstraint_apply2(
         c2 = bb - aa;
         d = c1 * c1 - 4 as c_int as c_float * c2 * c0;
         if d >= 0 as c_int as c_float {
-            let mut q: c_float = spine_sqrtf(d);
+            let mut q: c_float = spine38_sqrtf(d);
             let mut r0: c_float = 0.;
             let mut r1: c_float = 0.;
             if c1 < 0 as c_int as c_float {
@@ -9025,7 +9030,7 @@ pub unsafe extern "C" fn sp38IkConstraint_apply2(
                 r1
             };
             if r * r <= dd {
-                y = spine_sqrtf(dd - r * r) * bendDir as c_float;
+                y = spine38_sqrtf(dd - r * r) * bendDir as c_float;
                 a1 = ta - atan2f(y, r);
                 a2 = atan2f(y / psy, (r - l1) / psx);
                 current_block = 4207557037192841971;
@@ -9720,7 +9725,7 @@ pub unsafe extern "C" fn _sp38MeshAttachment_copy(
         b"spine.c\0" as *const u8 as *const c_char,
         5110 as c_int,
     ) as *mut c_float;
-    spine_memcpy(
+    spine38_memcpy(
         (*copy).regionUVs as *mut c_void,
         (*self_0).regionUVs as *const c_void,
         ((*self_0).super_0.worldVerticesLength as c_ulong)
@@ -9732,7 +9737,7 @@ pub unsafe extern "C" fn _sp38MeshAttachment_copy(
         b"spine.c\0" as *const u8 as *const c_char,
         5112 as c_int,
     ) as *mut c_float;
-    spine_memcpy(
+    spine38_memcpy(
         (*copy).uvs as *mut c_void,
         (*self_0).uvs as *const c_void,
         ((*self_0).super_0.worldVerticesLength as c_ulong)
@@ -9745,7 +9750,7 @@ pub unsafe extern "C" fn _sp38MeshAttachment_copy(
         b"spine.c\0" as *const u8 as *const c_char,
         5115 as c_int,
     ) as *mut c_ushort;
-    spine_memcpy(
+    spine38_memcpy(
         (*copy).triangles as *mut c_void,
         (*self_0).triangles as *const c_void,
         ((*self_0).trianglesCount as c_ulong)
@@ -9760,7 +9765,7 @@ pub unsafe extern "C" fn _sp38MeshAttachment_copy(
             b"spine.c\0" as *const u8 as *const c_char,
             5120 as c_int,
         ) as *mut c_int;
-        spine_memcpy(
+        spine38_memcpy(
             (*copy).edges as *mut c_void,
             (*self_0).edges as *const c_void,
             ((*self_0).edgesCount as c_ulong)
@@ -9994,7 +9999,7 @@ pub unsafe extern "C" fn _sp38PathAttachment_copy(
         b"spine.c\0" as *const u8 as *const c_char,
         5297 as c_int,
     ) as *mut c_float;
-    spine_memcpy(
+    spine38_memcpy(
         (*copy).lengths as *mut c_void,
         (*self_0).lengths as *const c_void,
         ((*self_0).lengthsLength as c_ulong)
@@ -10193,7 +10198,7 @@ pub unsafe extern "C" fn sp38PathConstraint_apply(mut self_0: *mut spPathConstra
                 if scale != 0 {
                     x = setupLength * (*bone).a;
                     y = setupLength * (*bone).c;
-                    length = spine_sqrtf(x * x + y * y);
+                    length = spine38_sqrtf(x * x + y * y);
                     *lengths.offset(i as isize) = length;
                 }
                 i += 1;
@@ -10201,7 +10206,7 @@ pub unsafe extern "C" fn sp38PathConstraint_apply(mut self_0: *mut spPathConstra
             } else {
                 x = setupLength * (*bone).a;
                 y = setupLength * (*bone).c;
-                length = spine_sqrtf(x * x + y * y);
+                length = spine38_sqrtf(x * x + y * y);
                 if scale != 0 {
                     *lengths.offset(i as isize) = length;
                 }
@@ -10257,7 +10262,7 @@ pub unsafe extern "C" fn sp38PathConstraint_apply(mut self_0: *mut spPathConstra
         if scale != 0 {
             length = *lengths.offset(i as isize);
             if length != 0 as c_int as c_float {
-                s = (spine_sqrtf(dx * dx + dy * dy) / length - 1 as c_int as c_float) * rotateMix
+                s = (spine38_sqrtf(dx * dx + dy * dy) / length - 1 as c_int as c_float) * rotateMix
                     + 1 as c_int as c_float;
                 *(&mut (*bone_0).a as *mut c_float) *= s;
                 *(&mut (*bone_0).c as *mut c_float) *= s;
@@ -10703,18 +10708,18 @@ pub unsafe extern "C" fn sp38PathConstraint_computeWorldPositions(
         ddfy = tmpy * 2 as c_int as c_float + dddfy;
         dfx = (cx1 - x1) * 0.75f32 + tmpx + dddfx * 0.16666667f32;
         dfy = (cy1 - y1) * 0.75f32 + tmpy + dddfy * 0.16666667f32;
-        pathLength += spine_sqrtf(dfx * dfx + dfy * dfy);
+        pathLength += spine38_sqrtf(dfx * dfx + dfy * dfy);
         dfx += ddfx;
         dfy += ddfy;
         ddfx += dddfx;
         ddfy += dddfy;
-        pathLength += spine_sqrtf(dfx * dfx + dfy * dfy);
+        pathLength += spine38_sqrtf(dfx * dfx + dfy * dfy);
         dfx += ddfx;
         dfy += ddfy;
-        pathLength += spine_sqrtf(dfx * dfx + dfy * dfy);
+        pathLength += spine38_sqrtf(dfx * dfx + dfy * dfy);
         dfx += ddfx + dddfx;
         dfy += ddfy + dddfy;
-        pathLength += spine_sqrtf(dfx * dfx + dfy * dfy);
+        pathLength += spine38_sqrtf(dfx * dfx + dfy * dfy);
         *curves.offset(i as isize) = pathLength;
         x1 = x2;
         y1 = y2;
@@ -10796,7 +10801,7 @@ pub unsafe extern "C" fn sp38PathConstraint_computeWorldPositions(
                     ddfy = tmpy * 2 as c_int as c_float + dddfy;
                     dfx = (cx1 - x1) * 0.3f32 + tmpx + dddfx * 0.16666667f32;
                     dfy = (cy1 - y1) * 0.3f32 + tmpy + dddfy * 0.16666667f32;
-                    curveLength = spine_sqrtf(dfx * dfx + dfy * dfy);
+                    curveLength = spine38_sqrtf(dfx * dfx + dfy * dfy);
                     *segments.offset(0 as c_int as isize) = curveLength;
                     ii = 1 as c_int;
                     while ii < 8 as c_int {
@@ -10804,17 +10809,17 @@ pub unsafe extern "C" fn sp38PathConstraint_computeWorldPositions(
                         dfy += ddfy;
                         ddfx += dddfx;
                         ddfy += dddfy;
-                        curveLength += spine_sqrtf(dfx * dfx + dfy * dfy);
+                        curveLength += spine38_sqrtf(dfx * dfx + dfy * dfy);
                         *segments.offset(ii as isize) = curveLength;
                         ii += 1;
                     }
                     dfx += ddfx;
                     dfy += ddfy;
-                    curveLength += spine_sqrtf(dfx * dfx + dfy * dfy);
+                    curveLength += spine38_sqrtf(dfx * dfx + dfy * dfy);
                     *segments.offset(8 as c_int as isize) = curveLength;
                     dfx += ddfx + dddfx;
                     dfy += ddfy + dddfy;
-                    curveLength += spine_sqrtf(dfx * dfx + dfy * dfy);
+                    curveLength += spine38_sqrtf(dfx * dfx + dfy * dfy);
                     *segments.offset(9 as c_int as isize) = curveLength;
                     segment = 0 as c_int;
                 }
@@ -10982,12 +10987,12 @@ pub unsafe extern "C" fn _sp38RegionAttachment_copy(
     (*copy).rotation = (*self_0).rotation;
     (*copy).width = (*self_0).width;
     (*copy).height = (*self_0).height;
-    spine_memcpy(
+    spine38_memcpy(
         ((*copy).uvs).as_mut_ptr() as *mut c_void,
         ((*self_0).uvs).as_mut_ptr() as *const c_void,
         (::core::mem::size_of::<c_float>() as c_ulong).wrapping_mul(8 as c_int as c_ulong),
     );
-    spine_memcpy(
+    spine38_memcpy(
         ((*copy).offset).as_mut_ptr() as *mut c_void,
         ((*self_0).offset).as_mut_ptr() as *const c_void,
         (::core::mem::size_of::<c_float>() as c_ulong).wrapping_mul(8 as c_int as c_ulong),
@@ -11223,7 +11228,7 @@ pub unsafe extern "C" fn sp38Skeleton_create(mut data: *mut spSkeletonData) -> *
         b"spine.c\0" as *const u8 as *const c_char,
         6159 as c_int,
     ) as *mut *mut spSlot;
-    spine_memcpy(
+    spine38_memcpy(
         (*self_0).drawOrder as *mut c_void,
         (*self_0).slots as *const c_void,
         (::core::mem::size_of::<*mut spSlot>() as c_ulong)
@@ -11337,7 +11342,7 @@ unsafe extern "C" fn _addToUpdateCache(
     let mut update: *mut _spUpdate = 0 as *mut _spUpdate;
     if (*internal).updateCacheCount == (*internal).updateCacheCapacity {
         (*internal).updateCacheCapacity *= 2 as c_int;
-        (*internal).updateCache = spine_realloc(
+        (*internal).updateCache = spine38_realloc(
             (*internal).updateCache as *mut c_void,
             (::core::mem::size_of::<_spUpdate>() as c_ulong)
                 .wrapping_mul((*internal).updateCacheCapacity as c_ulong),
@@ -11351,7 +11356,7 @@ unsafe extern "C" fn _addToUpdateCache(
 unsafe extern "C" fn _addToUpdateCacheReset(internal: *mut _spSkeleton, mut bone: *mut spBone) {
     if (*internal).updateCacheResetCount == (*internal).updateCacheResetCapacity {
         (*internal).updateCacheResetCapacity *= 2 as c_int;
-        (*internal).updateCacheReset = spine_realloc(
+        (*internal).updateCacheReset = spine38_realloc(
             (*internal).updateCacheReset as *mut c_void,
             (::core::mem::size_of::<*mut spBone>() as c_ulong)
                 .wrapping_mul((*internal).updateCacheResetCapacity as c_ulong),
@@ -11826,7 +11831,7 @@ pub unsafe extern "C" fn sp38Skeleton_setBonesToSetupPose(mut self_0: *const spS
 #[no_mangle]
 pub unsafe extern "C" fn sp38Skeleton_setSlotsToSetupPose(mut self_0: *const spSkeleton) {
     let mut i: c_int = 0;
-    spine_memcpy(
+    spine38_memcpy(
         (*self_0).drawOrder as *mut c_void,
         (*self_0).slots as *const c_void,
         ((*self_0).slotsCount as c_ulong)
@@ -12211,7 +12216,7 @@ pub unsafe extern "C" fn read38String(mut input: *mut _dataInput) -> *mut c_char
         b"spine.c\0" as *const u8 as *const c_char,
         6824 as c_int,
     ) as *mut c_char;
-    spine_memcpy(
+    spine38_memcpy(
         string as *mut c_void,
         (*input).cursor as *const c_void,
         (length - 1 as c_int) as size_t,
@@ -12284,7 +12289,7 @@ unsafe extern "C" fn _spSkeletonBinary_addLinkedMesh(
             b"spine.c\0" as *const u8 as *const c_char,
             6909 as c_int,
         ) as *mut _spLinkedMeshBinary;
-        spine_memcpy(
+        spine38_memcpy(
             linkedMeshes as *mut c_void,
             (*internal).linkedMeshes as *const c_void,
             (::core::mem::size_of::<_spLinkedMeshBinary>() as c_ulong)
@@ -12419,7 +12424,7 @@ pub unsafe extern "C" fn sp38TimelineArray_removeAt(
     mut index: c_int,
 ) {
     (*self_0).size -= 1;
-    spine_memmove(
+    spine38_memmove(
         ((*self_0).items).offset(index as isize) as *mut c_void,
         ((*self_0).items)
             .offset(index as isize)
@@ -12925,7 +12930,7 @@ unsafe extern "C" fn _spSkeletonBinary_readAnimation(
                     if end == 0 {
                         if weighted != 0 {
                             deform = tempDeform;
-                            spine_memset(
+                            spine38_memset(
                                 deform as *mut c_void,
                                 0 as c_int,
                                 (::core::mem::size_of::<c_float>() as c_ulong)
@@ -12938,7 +12943,7 @@ unsafe extern "C" fn _spSkeletonBinary_readAnimation(
                         let mut v: c_int = 0;
                         let mut start: c_int = readVarint(input, 1 as c_int);
                         deform = tempDeform;
-                        spine_memset(
+                        spine38_memset(
                             deform as *mut c_void,
                             0 as c_int,
                             (::core::mem::size_of::<c_float>() as c_ulong)
@@ -12958,7 +12963,7 @@ unsafe extern "C" fn _spSkeletonBinary_readAnimation(
                                 v += 1;
                             }
                         }
-                        spine_memset(
+                        spine38_memset(
                             deform.offset(v as isize) as *mut c_void,
                             0 as c_int,
                             (::core::mem::size_of::<c_float>() as c_ulong)
@@ -13016,7 +13021,7 @@ unsafe extern "C" fn _spSkeletonBinary_readAnimation(
             ) as *mut c_int;
             let mut originalIndex: c_int = 0 as c_int;
             let mut unchangedIndex: c_int = 0 as c_int;
-            spine_memset(
+            spine38_memset(
                 drawOrder as *mut c_void,
                 -(1 as c_int),
                 (::core::mem::size_of::<c_int>() as c_ulong)
@@ -14186,7 +14191,7 @@ pub unsafe extern "C" fn sp38SkeletonBounds_update(
             b"spine.c\0" as *const u8 as *const c_char,
             7935 as c_int,
         ) as *mut *mut spPolygon;
-        spine_memcpy(
+        spine38_memcpy(
             newPolygons as *mut c_void,
             (*self_0).polygons as *const c_void,
             (::core::mem::size_of::<*mut spPolygon>() as c_ulong)
@@ -15202,7 +15207,7 @@ unsafe extern "C" fn _spSkeletonJson_addLinkedMesh(
             b"spine.c\0" as *const u8 as *const c_char,
             8638 as c_int,
         ) as *mut _spLinkedMeshJson;
-        spine_memcpy(
+        spine38_memcpy(
             linkedMeshes as *mut c_void,
             (*internal).linkedMeshes as *const c_void,
             (::core::mem::size_of::<_spLinkedMeshJson>() as c_ulong)
@@ -15984,7 +15989,7 @@ unsafe extern "C" fn _spSkeletonJson_readAnimation(
                     if vertices.is_null() {
                         if weighted != 0 {
                             deform = tempDeform;
-                            spine_memset(
+                            spine38_memset(
                                 deform as *mut c_void,
                                 0 as c_int,
                                 (::core::mem::size_of::<c_float>() as c_ulong)
@@ -16002,7 +16007,7 @@ unsafe extern "C" fn _spSkeletonJson_readAnimation(
                         );
                         let mut vertex: *mut Json = 0 as *mut Json;
                         deform = tempDeform;
-                        spine_memset(
+                        spine38_memset(
                             deform as *mut c_void,
                             0 as c_int,
                             (::core::mem::size_of::<c_float>() as c_ulong)
@@ -16025,7 +16030,7 @@ unsafe extern "C" fn _spSkeletonJson_readAnimation(
                                 v += 1;
                             }
                         }
-                        spine_memset(
+                        spine38_memset(
                             deform.offset(v as isize) as *mut c_void,
                             0 as c_int,
                             (::core::mem::size_of::<c_float>() as c_ulong)
@@ -17989,7 +17994,7 @@ pub unsafe extern "C" fn sp38BoneDataArray_removeAt(
     mut index: c_int,
 ) {
     (*self_0).size -= 1;
-    spine_memmove(
+    spine38_memmove(
         ((*self_0).items).offset(index as isize) as *mut c_void,
         ((*self_0).items)
             .offset(index as isize)
@@ -18149,7 +18154,7 @@ pub unsafe extern "C" fn sp38IkConstraintDataArray_removeAt(
     mut index: c_int,
 ) {
     (*self_0).size -= 1;
-    spine_memmove(
+    spine38_memmove(
         ((*self_0).items).offset(index as isize) as *mut c_void,
         ((*self_0).items)
             .offset(index as isize)
@@ -18312,7 +18317,7 @@ pub unsafe extern "C" fn sp38TransformConstraintDataArray_removeAt(
     mut index: c_int,
 ) {
     (*self_0).size -= 1;
-    spine_memmove(
+    spine38_memmove(
         ((*self_0).items).offset(index as isize) as *mut c_void,
         ((*self_0).items)
             .offset(index as isize)
@@ -18475,7 +18480,7 @@ pub unsafe extern "C" fn sp38PathConstraintDataArray_removeAt(
     mut index: c_int,
 ) {
     (*self_0).size -= 1;
-    spine_memmove(
+    spine38_memmove(
         ((*self_0).items).offset(index as isize) as *mut c_void,
         ((*self_0).items)
             .offset(index as isize)
@@ -19155,15 +19160,15 @@ pub unsafe extern "C" fn _sp38TransformConstraint_applyAbsoluteWorld(
             modified = 1 as c_int;
         }
         if scaleMix > 0 as c_int as c_float {
-            s = spine_sqrtf((*bone).a * (*bone).a + (*bone).c * (*bone).c);
-            ts = spine_sqrtf(ta * ta + tc * tc);
+            s = spine38_sqrtf((*bone).a * (*bone).a + (*bone).c * (*bone).c);
+            ts = spine38_sqrtf(ta * ta + tc * tc);
             if s > 0.00001f32 {
                 s = (s + (ts - s + (*(*self_0).data).offsetScaleX) * scaleMix) / s;
             }
             *(&mut (*bone).a as *mut c_float) *= s;
             *(&mut (*bone).c as *mut c_float) *= s;
-            s = spine_sqrtf((*bone).b * (*bone).b + (*bone).d * (*bone).d);
-            ts = spine_sqrtf(tb * tb + td * td);
+            s = spine38_sqrtf((*bone).b * (*bone).b + (*bone).d * (*bone).d);
+            ts = spine38_sqrtf(tb * tb + td * td);
             if s > 0.00001f32 {
                 s = (s + (ts - s + (*(*self_0).data).offsetScaleY) * scaleMix) / s;
             }
@@ -19176,7 +19181,7 @@ pub unsafe extern "C" fn _sp38TransformConstraint_applyAbsoluteWorld(
             d = (*bone).d;
             by = atan2f(d, b);
             r = atan2f(td, tb) - atan2f(tc, ta) - (by - atan2f((*bone).c, (*bone).a));
-            s = spine_sqrtf(b * b + d * d);
+            s = spine38_sqrtf(b * b + d * d);
             if r > 3.1415926535897932385f32 {
                 r -= 3.1415926535897932385f32 * 2 as c_int as c_float;
             } else if r < -3.1415926535897932385f32 {
@@ -19262,13 +19267,13 @@ pub unsafe extern "C" fn _sp38TransformConstraint_applyRelativeWorld(
             modified = 1 as c_int;
         }
         if scaleMix > 0 as c_int as c_float {
-            s = (spine_sqrtf(ta * ta + tc * tc) - 1 as c_int as c_float
+            s = (spine38_sqrtf(ta * ta + tc * tc) - 1 as c_int as c_float
                 + (*(*self_0).data).offsetScaleX)
                 * scaleMix
                 + 1 as c_int as c_float;
             *(&mut (*bone).a as *mut c_float) *= s;
             *(&mut (*bone).c as *mut c_float) *= s;
-            s = (spine_sqrtf(tb * tb + td * td) - 1 as c_int as c_float
+            s = (spine38_sqrtf(tb * tb + td * td) - 1 as c_int as c_float
                 + (*(*self_0).data).offsetScaleY)
                 * scaleMix
                 + 1 as c_int as c_float;
@@ -19287,7 +19292,7 @@ pub unsafe extern "C" fn _sp38TransformConstraint_applyRelativeWorld(
             d = (*bone).d;
             r = atan2f(d, b)
                 + (r - 3.1415926535897932385f32 / 2 as c_int as c_float + offsetShearY) * shearMix;
-            s = spine_sqrtf(b * b + d * d);
+            s = spine38_sqrtf(b * b + d * d);
             *(&mut (*bone).b as *mut c_float) = cosf(r) * s;
             *(&mut (*bone).d as *mut c_float) = sinf(r) * s;
             modified = 1 as c_int;
@@ -20086,7 +20091,7 @@ pub unsafe extern "C" fn sp38VertexAttachment_copyTo(
             b"spine.c\0" as *const u8 as *const c_char,
             10896 as c_int,
         ) as *mut c_int;
-        spine_memcpy(
+        spine38_memcpy(
             (*to).bones as *mut c_void,
             (*from).bones as *const c_void,
             ((*from).bonesCount as c_ulong)
@@ -20107,7 +20112,7 @@ pub unsafe extern "C" fn sp38VertexAttachment_copyTo(
             b"spine.c\0" as *const u8 as *const c_char,
             10908 as c_int,
         ) as *mut c_float;
-        spine_memcpy(
+        spine38_memcpy(
             (*to).vertices as *mut c_void,
             (*from).vertices as *const c_void,
             ((*from).verticesCount as c_ulong)
@@ -20207,7 +20212,7 @@ pub unsafe extern "C" fn _sp38SwirlVertexEffect_transform(
         (*internal).angle * (3.1415926535897932385f32 / 180 as c_int as c_float);
     let mut x: c_float = *positionX - (*internal).worldX;
     let mut y: c_float = *positionY - (*internal).worldY;
-    let mut dist: c_float = spine_sqrtf(x * x + y * y);
+    let mut dist: c_float = spine38_sqrtf(x * x + y * y);
     if dist < (*internal).radius {
         let mut theta: c_float = _sp38Math_interpolate(
             Some(_sp38Math_pow2_apply as unsafe extern "C" fn(c_float) -> c_float),
@@ -20260,17 +20265,17 @@ pub unsafe extern "C" fn sp38SwirlVertexEffect_dispose(mut effect: *mut spSwirlV
 }
 #[no_mangle]
 pub unsafe extern "C" fn _sp38InternalRandom() -> c_float {
-    return spine_rand() as c_float / 2147483647 as c_int as c_float;
+    return spine38_rand() as c_float / 2147483647 as c_int as c_float;
 }
 static mut mallocFunc: Option<unsafe extern "C" fn(size_t) -> *mut c_void> =
-    Some(spine_malloc as unsafe extern "C" fn(size_t) -> *mut c_void);
+    Some(spine38_malloc as unsafe extern "C" fn(size_t) -> *mut c_void);
 static mut reallocFunc: Option<unsafe extern "C" fn(*mut c_void, size_t) -> *mut c_void> =
-    Some(spine_realloc as unsafe extern "C" fn(*mut c_void, size_t) -> *mut c_void);
+    Some(spine38_realloc as unsafe extern "C" fn(*mut c_void, size_t) -> *mut c_void);
 static mut debugMallocFunc: Option<
     unsafe extern "C" fn(size_t, *const c_char, c_int) -> *mut c_void,
 > = None;
 static mut freeFunc: Option<unsafe extern "C" fn(*mut c_void) -> ()> =
-    Some(spine_free as unsafe extern "C" fn(*mut c_void) -> ());
+    Some(spine38_free as unsafe extern "C" fn(*mut c_void) -> ());
 static mut randomFunc: Option<unsafe extern "C" fn() -> c_float> = unsafe {
     Some(::core::mem::transmute::<
         unsafe extern "C" fn() -> c_float,
@@ -20297,7 +20302,7 @@ pub unsafe extern "C" fn _sp38Calloc(
 ) -> *mut c_void {
     let mut ptr: *mut c_void = _sp38Malloc(num.wrapping_mul(size), file, line);
     if !ptr.is_null() {
-        spine_memset(ptr, 0 as c_int, num.wrapping_mul(size));
+        spine38_memset(ptr, 0 as c_int, num.wrapping_mul(size));
     }
     return ptr;
 }
@@ -20317,27 +20322,27 @@ pub unsafe extern "C" fn _sp38Random() -> c_float {
 }
 #[no_mangle]
 pub unsafe extern "C" fn _sp38SetDebugMalloc(
-    mut spine_malloc_0: Option<unsafe extern "C" fn(size_t, *const c_char, c_int) -> *mut c_void>,
+    mut spine38_malloc_0: Option<unsafe extern "C" fn(size_t, *const c_char, c_int) -> *mut c_void>,
 ) {
-    debugMallocFunc = spine_malloc_0;
+    debugMallocFunc = spine38_malloc_0;
 }
 #[no_mangle]
 pub unsafe extern "C" fn _sp38SetMalloc(
-    mut spine_malloc_0: Option<unsafe extern "C" fn(size_t) -> *mut c_void>,
+    mut spine38_malloc_0: Option<unsafe extern "C" fn(size_t) -> *mut c_void>,
 ) {
-    mallocFunc = spine_malloc_0;
+    mallocFunc = spine38_malloc_0;
 }
 #[no_mangle]
 pub unsafe extern "C" fn _sp38SetRealloc(
-    mut spine_realloc_0: Option<unsafe extern "C" fn(*mut c_void, size_t) -> *mut c_void>,
+    mut spine38_realloc_0: Option<unsafe extern "C" fn(*mut c_void, size_t) -> *mut c_void>,
 ) {
-    reallocFunc = spine_realloc_0;
+    reallocFunc = spine38_realloc_0;
 }
 #[no_mangle]
 pub unsafe extern "C" fn _sp38SetFree(
-    mut spine_free_0: Option<unsafe extern "C" fn(*mut c_void) -> ()>,
+    mut spine38_free_0: Option<unsafe extern "C" fn(*mut c_void) -> ()>,
 ) {
-    freeFunc = spine_free_0;
+    freeFunc = spine38_free_0;
 }
 #[no_mangle]
 pub unsafe extern "C" fn _sp38SetRandom(mut random: Option<unsafe extern "C" fn() -> c_float>) {
@@ -20351,25 +20356,25 @@ pub unsafe extern "C" fn _sp38ReadFile(
     let mut data: *mut c_char = 0 as *mut c_char;
     #[allow(unused_variables)]
     let mut result: size_t;
-    let mut file: *mut FILE = spine_fopen(path, b"rb\0" as *const u8 as *const c_char);
+    let mut file: *mut FILE = spine38_fopen(path, b"rb\0" as *const u8 as *const c_char);
     if file.is_null() {
         return 0 as *mut c_char;
     }
-    spine_fseek(file, 0 as c_int as c_long, 2 as c_int);
-    *length = spine_ftell(file) as c_int;
-    spine_fseek(file, 0 as c_int as c_long, 0 as c_int);
+    spine38_fseek(file, 0 as c_int as c_long, 2 as c_int);
+    *length = spine38_ftell(file) as c_int;
+    spine38_fseek(file, 0 as c_int as c_long, 0 as c_int);
     data = _sp38Malloc(
         (::core::mem::size_of::<c_char>() as c_ulong).wrapping_mul(*length as c_ulong),
         b"spine.c\0" as *const u8 as *const c_char,
         11122 as c_int,
     ) as *mut c_char;
-    result = spine_fread(
+    result = spine38_fread(
         data as *mut c_void,
         1 as c_int as size_t,
         *length as size_t,
         file,
     );
-    spine_fclose(file);
+    spine38_fclose(file);
     return data;
 }
 #[no_mangle]
@@ -20389,9 +20394,9 @@ pub unsafe extern "C" fn _sp38Math_randomTriangularWith(
     let mut u: c_float = _sp38Random();
     let mut d: c_float = max - min;
     if u <= (mode - min) / d {
-        return min + spine_sqrtf(u * d * (mode - min));
+        return min + spine38_sqrtf(u * d * (mode - min));
     }
-    return max - spine_sqrtf((1 as c_int as c_float - u) * d * (max - mode));
+    return max - spine38_sqrtf((1 as c_int as c_float - u) * d * (max - mode));
 }
 #[no_mangle]
 pub unsafe extern "C" fn _sp38Math_interpolate(

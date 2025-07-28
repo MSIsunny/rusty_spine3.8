@@ -100,72 +100,76 @@ unsafe extern "C" fn spine38_strrchr(s: *const c_char, c: c_int) -> *mut c_char 
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_rand() -> c_int {
+unsafe extern "C" fn spine38_rand() -> c_int {
     libc::rand()
 }
 
 #[no_mangle]
-extern "C" fn spine_sqrtf(x: c_float) -> c_float {
+extern "C" fn spine38_sqrtf(x: c_float) -> c_float {
     x.sqrt()
 }
 
 #[no_mangle]
-extern "C" fn spine_ceil(x: c_double) -> c_double {
+extern "C" fn spine38_ceil(x: c_double) -> c_double {
     x.ceil()
 }
 
 #[no_mangle]
-extern "C" fn spine_acosf(x: c_float) -> c_float {
+extern "C" fn spine38_acosf(x: c_float) -> c_float {
     x.acos()
 }
 
 #[no_mangle]
-extern "C" fn spine_atan2f(x: c_float, y: c_float) -> c_float {
+extern "C" fn spine38_atan2f(x: c_float, y: c_float) -> c_float {
     x.atan2(y)
 }
 
 #[no_mangle]
-extern "C" fn spine_cosf(x: c_float) -> c_float {
+extern "C" fn spine38_cosf(x: c_float) -> c_float {
     x.cos()
 }
 
 #[no_mangle]
-extern "C" fn spine_sinf(x: c_float) -> c_float {
+extern "C" fn spine38_sinf(x: c_float) -> c_float {
     x.sin()
 }
 
 #[no_mangle]
-extern "C" fn spine_pow(x: c_double, y: c_double) -> c_double {
+extern "C" fn spine38_pow(x: c_double, y: c_double) -> c_double {
     x.powf(y)
 }
 
 #[no_mangle]
-extern "C" fn spine_fmodf(x: c_float, y: c_float) -> c_float {
+extern "C" fn spine38_fmodf(x: c_float, y: c_float) -> c_float {
     x % y
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_malloc(size: size_t) -> *mut c_void {
+unsafe extern "C" fn spine38_malloc(size: size_t) -> *mut c_void {
     libc::malloc(size)
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_realloc(ptr: *mut c_void, size: size_t) -> *mut c_void {
+unsafe extern "C" fn spine38_realloc(ptr: *mut c_void, size: size_t) -> *mut c_void {
     libc::realloc(ptr, size)
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_free(ptr: *mut c_void) {
+unsafe extern "C" fn spine38_free(ptr: *mut c_void) {
     libc::free(ptr)
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_memcpy(dest: *mut c_void, src: *const c_void, n: size_t) -> *mut c_void {
+unsafe extern "C" fn spine38_memcpy(
+    dest: *mut c_void,
+    src: *const c_void,
+    n: size_t,
+) -> *mut c_void {
     libc::memcpy(dest, src, n)
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_memmove(
+unsafe extern "C" fn spine38_memmove(
     dest: *mut c_void,
     src: *const c_void,
     n: size_t,
@@ -174,7 +178,7 @@ unsafe extern "C" fn spine_memmove(
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_memset(s: *mut c_void, c: c_int, n: size_t) -> *mut c_void {
+unsafe extern "C" fn spine38_memset(s: *mut c_void, c: c_int, n: size_t) -> *mut c_void {
     libc::memset(s, c, n)
 }
 
@@ -206,17 +210,17 @@ macro_rules! spine_sscanf {
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_fopen(filename: *const c_char, modes: *const c_char) -> *mut FILE {
+unsafe extern "C" fn spine38_fopen(filename: *const c_char, modes: *const c_char) -> *mut FILE {
     libc::fopen(filename, modes)
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_fclose(stream: *mut FILE) -> c_int {
+unsafe extern "C" fn spine38_fclose(stream: *mut FILE) -> c_int {
     libc::fclose(stream)
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_fread(
+unsafe extern "C" fn spine38_fread(
     ptr: *mut c_void,
     size: size_t,
     n: size_t,
@@ -226,11 +230,11 @@ unsafe extern "C" fn spine_fread(
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_fseek(stream: *mut FILE, off: c_long, whence: c_int) -> c_int {
+unsafe extern "C" fn spine38_fseek(stream: *mut FILE, off: c_long, whence: c_int) -> c_int {
     libc::fseek(stream, off, whence)
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_ftell(stream: *mut FILE) -> c_long {
+unsafe extern "C" fn spine38_ftell(stream: *mut FILE) -> c_long {
     libc::ftell(stream)
 }

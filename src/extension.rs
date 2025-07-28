@@ -153,7 +153,7 @@ where
 }
 
 #[no_mangle]
-extern "C" fn _spAtlasPage_createTexture(c_atlas_page: *mut spAtlasPage, c_path: *const c_char) {
+extern "C" fn _sp38AtlasPage_createTexture(c_atlas_page: *mut spAtlasPage, c_path: *const c_char) {
     let singleton = Extension::singleton();
     let extension = singleton.lock().unwrap();
     if let Some(cb) = &extension.create_texture_cb {
@@ -167,7 +167,7 @@ extern "C" fn _spAtlasPage_createTexture(c_atlas_page: *mut spAtlasPage, c_path:
 }
 
 #[no_mangle]
-extern "C" fn _spAtlasPage_disposeTexture(c_atlas_page: *mut spAtlasPage) {
+extern "C" fn _sp38AtlasPage_disposeTexture(c_atlas_page: *mut spAtlasPage) {
     let singleton = Extension::singleton();
     let extension = singleton.lock().unwrap();
     if let Some(cb) = &extension.dispose_texture_cb {
@@ -178,21 +178,21 @@ extern "C" fn _spAtlasPage_disposeTexture(c_atlas_page: *mut spAtlasPage) {
 }
 
 extern "C" {
-    fn spine_malloc(__size: size_t) -> *mut c_void;
-    fn spine_memcpy(__dest: *mut c_void, __src: *const c_void, __n: size_t) -> *mut c_void;
+    fn spine38_malloc(__size: size_t) -> *mut c_void;
+    fn spine38_memcpy(__dest: *mut c_void, __src: *const c_void, __n: size_t) -> *mut c_void;
 }
 
 #[no_mangle]
-extern "C" fn _spUtil_readFile(c_path: *const c_char, c_length: *mut c_int) -> *mut c_char {
+extern "C" fn _sp38Util_readFile(c_path: *const c_char, c_length: *mut c_int) -> *mut c_char {
     let singleton = Extension::singleton();
     let extension = singleton.lock().unwrap();
     extension.read_file_cb.as_ref().map_or_else(
         || {
             let str = unsafe { CStr::from_ptr(c_path).to_str().unwrap().to_owned() };
             read(str).map_or(std::ptr::null_mut(), |data| {
-                let c_data = unsafe { spine_malloc(data.len() as size_t) };
+                let c_data = unsafe { spine38_malloc(data.len() as size_t) };
                 unsafe {
-                    spine_memcpy(c_data, data.as_ptr().cast::<c_void>(), data.len() as size_t);
+                    spine38_memcpy(c_data, data.as_ptr().cast::<c_void>(), data.len() as size_t);
                     *c_length = data.len() as c_int;
                 }
                 c_data.cast::<c_char>()
@@ -203,8 +203,8 @@ extern "C" fn _spUtil_readFile(c_path: *const c_char, c_length: *mut c_int) -> *
                 std::ptr::null_mut(),
                 |data| unsafe {
                     *c_length = data.len() as c_int;
-                    let c_data = spine_malloc(data.len() as size_t);
-                    spine_memcpy(c_data, data.as_ptr().cast::<c_void>(), data.len() as size_t);
+                    let c_data = spine38_malloc(data.len() as size_t);
+                    spine38_memcpy(c_data, data.as_ptr().cast::<c_void>(), data.len() as size_t);
                     c_data.cast::<c_char>()
                 },
             )
