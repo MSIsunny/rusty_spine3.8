@@ -20354,11 +20354,10 @@ pub unsafe extern "C" fn _spMath_pow2out_apply(mut a: c_float) -> c_float {
 type _IO_wide_data = u8;
 type _IO_codecvt = u8;
 type _IO_marker = u8;
-use std::collections::HashMap;
-
 pub use crate::c::environment::types::*;
 
 // ---------------------------------------------------------------------------
+use std::collections::HashMap;
 
 struct FileOrFolder {
     pub path: String,
