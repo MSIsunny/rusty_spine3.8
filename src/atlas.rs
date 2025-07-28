@@ -103,14 +103,27 @@ impl Atlas {
         }
     }
 
-    pub fn new_from_folder(path: &str) -> Result<Atlas, SpineError> {
+    pub fn new_from_folder(
+        path: &str,
+    ) -> Result<
+        (
+            Atlas,
+            Box<std::collections::HashMap<String, image::DynamicImage>>,
+        ),
+        SpineError,
+    > {
         let path = path.to_string();
-        let c_atlas = unsafe { spAtlas_create_from_folder(&path) };
+        let atlas_and_imgs = unsafe { spAtlas_create_from_folder(&path) };
+
+        let c_atlas = atlas_and_imgs.atlas;
+        let imgs = unsafe { Box::from_raw(atlas_and_imgs.imgs) };
+
         if !c_atlas.is_null() {
-            Ok(Self {
+            let atlas = Atlas {
                 c_atlas: SyncPtr(c_atlas),
                 owns_memory: true,
-            })
+            };
+            Ok((atlas, imgs))
         } else {
             Err(SpineError::FailedToReadFile {
                 file: path.to_string(),
