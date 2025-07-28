@@ -1,5 +1,5 @@
 use crate::{
-    c::{c_void, spMeshAttachment_updateUVs},
+    c::{c_void, sp38MeshAttachment_updateUVs},
     BlendMode, Color, Skeleton, SkeletonClipping,
 };
 
@@ -81,7 +81,7 @@ impl SimpleDrawer {
 
             if let Some(mesh_attachment) = slot.attachment().and_then(|a| a.as_mesh()) {
                 unsafe {
-                    spMeshAttachment_updateUVs(mesh_attachment.c_ptr());
+                    sp38MeshAttachment_updateUVs(mesh_attachment.c_ptr());
                 };
                 color = mesh_attachment.color();
 

@@ -1,7 +1,7 @@
 use crate::{
     bounding_box_attachment::BoundingBoxAttachment,
     c::{
-        spAttachment, spAttachmentType, spAttachment_dispose, spBoundingBoxAttachment,
+        sp38Attachment_dispose, spAttachment, spAttachmentType, spBoundingBoxAttachment,
         spClippingAttachment, spMeshAttachment, spPointAttachment, spRegionAttachment,
     },
     c_interface::{NewFromPtr, SyncPtr},
@@ -120,7 +120,7 @@ impl Clone for Attachment {
 impl Drop for Attachment {
     fn drop(&mut self) {
         unsafe {
-            spAttachment_dispose(self.c_ptr());
+            sp38Attachment_dispose(self.c_ptr());
         }
     }
 }

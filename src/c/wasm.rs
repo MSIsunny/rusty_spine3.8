@@ -149,7 +149,7 @@ impl Allocator {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn spine_isspace(c: c_int) -> c_int {
+pub unsafe extern "C" fn spine38_isspace(c: c_int) -> c_int {
     if c == '\t' as i32
         || c == '\n' as i32
         || c == '\u{b}' as i32
@@ -164,12 +164,12 @@ pub unsafe extern "C" fn spine_isspace(c: c_int) -> c_int {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn spine_isdigit(c: c_int) -> c_int {
+pub unsafe extern "C" fn spine38_isdigit(c: c_int) -> c_int {
     ((c as c_uint).wrapping_sub('0' as i32 as c_uint) < 10 as c_int as c_uint) as c_int
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn spine_isalpha(c: c_int) -> c_int {
+pub unsafe extern "C" fn spine38_isalpha(c: c_int) -> c_int {
     if c >= 'a' as i32 && c <= 'z' as i32 || c >= 'A' as i32 && c <= 'Z' as i32 {
         1 as c_int
     } else {
@@ -178,7 +178,7 @@ pub unsafe extern "C" fn spine_isalpha(c: c_int) -> c_int {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn spine_isupper(c: c_int) -> c_int {
+pub unsafe extern "C" fn spine38_isupper(c: c_int) -> c_int {
     if c >= 'A' as i32 && c <= 'Z' as i32 {
         1 as c_int
     } else {
@@ -187,7 +187,7 @@ pub unsafe extern "C" fn spine_isupper(c: c_int) -> c_int {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn spine_strlen(str: *const c_char) -> c_ulong {
+pub unsafe extern "C" fn spine38_strlen(str: *const c_char) -> c_ulong {
     let mut s: *const c_char;
     s = str;
     while *s != 0 {
@@ -197,7 +197,7 @@ pub unsafe extern "C" fn spine_strlen(str: *const c_char) -> c_ulong {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn spine_strcmp(mut s1: *const c_char, mut s2: *const c_char) -> c_int {
+pub unsafe extern "C" fn spine38_strcmp(mut s1: *const c_char, mut s2: *const c_char) -> c_int {
     loop {
         let fresh0 = s2;
         s2 = s2.offset(1);
@@ -215,7 +215,7 @@ pub unsafe extern "C" fn spine_strcmp(mut s1: *const c_char, mut s2: *const c_ch
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn spine_strncmp(
+pub unsafe extern "C" fn spine38_strncmp(
     mut s1: *const c_char,
     mut s2: *const c_char,
     mut n: size_t,
@@ -502,7 +502,7 @@ static mut CHARMAP: [c_uchar; 256] = [
     -1i32 as c_uchar,
 ];
 #[no_mangle]
-pub unsafe extern "C" fn spine_strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int {
+pub unsafe extern "C" fn spine38_strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int {
     let cm: *const c_uchar = CHARMAP.as_ptr();
     let mut us1: *const c_uchar = s1.cast::<c_uchar>();
     let mut us2: *const c_uchar = s2.cast::<c_uchar>();
@@ -523,7 +523,10 @@ pub unsafe extern "C" fn spine_strcasecmp(s1: *const c_char, s2: *const c_char) 
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn spine_strcpy(mut to: *mut c_char, mut from: *const c_char) -> *mut c_char {
+pub unsafe extern "C" fn spine38_strcpy(
+    mut to: *mut c_char,
+    mut from: *const c_char,
+) -> *mut c_char {
     let save: *mut c_char = to;
     loop {
         *to = *from;
@@ -537,7 +540,7 @@ pub unsafe extern "C" fn spine_strcpy(mut to: *mut c_char, mut from: *const c_ch
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn spine_strncpy(
+pub unsafe extern "C" fn spine38_strncpy(
     dst: *mut c_char,
     src: *const c_char,
     mut n: size_t,
@@ -567,7 +570,7 @@ pub unsafe extern "C" fn spine_strncpy(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn spine_strncat(
+pub unsafe extern "C" fn spine38_strncat(
     dst: *mut c_char,
     src: *const c_char,
     mut n: size_t,
@@ -597,7 +600,7 @@ pub unsafe extern "C" fn spine_strncat(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn spine_strtol(
+pub unsafe extern "C" fn spine38_strtol(
     nptr: *const c_char,
     endptr: *mut *mut c_char,
     mut base: c_int,
@@ -614,7 +617,7 @@ pub unsafe extern "C" fn spine_strtol(
         let fresh0 = s;
         s = s.offset(1);
         c = *fresh0 as c_uchar as c_int;
-        if spine_isspace(c) == 0 {
+        if spine38_isspace(c) == 0 {
             break;
         }
     }
@@ -663,13 +666,13 @@ pub unsafe extern "C" fn spine_strtol(
     acc = 0 as c_int as c_long;
     any = 0 as c_int;
     loop {
-        if spine_isdigit(c) != 0 {
+        if spine38_isdigit(c) != 0 {
             c -= '0' as i32;
         } else {
-            if spine_isalpha(c) == 0 {
+            if spine38_isalpha(c) == 0 {
                 break;
             }
-            c -= if spine_isupper(c) != 0 {
+            c -= if spine38_isupper(c) != 0 {
                 'A' as i32 - 10 as c_int
             } else {
                 'a' as i32 - 10 as c_int
@@ -713,7 +716,7 @@ pub unsafe extern "C" fn spine_strtol(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn spine_strtoul(
+pub unsafe extern "C" fn spine38_strtoul(
     nptr: *const c_char,
     endptr: *mut *mut c_char,
     mut base: c_int,
@@ -730,7 +733,7 @@ pub unsafe extern "C" fn spine_strtoul(
         let fresh0 = s;
         s = s.offset(1);
         c = *fresh0 as c_uchar as c_int;
-        if spine_isspace(c) == 0 {
+        if spine38_isspace(c) == 0 {
             break;
         }
     }
@@ -765,13 +768,13 @@ pub unsafe extern "C" fn spine_strtoul(
     acc = 0 as c_int as c_ulong;
     any = 0 as c_int;
     loop {
-        if spine_isdigit(c) != 0 {
+        if spine38_isdigit(c) != 0 {
             c -= '0' as i32;
         } else {
-            if spine_isalpha(c) == 0 {
+            if spine38_isalpha(c) == 0 {
                 break;
             }
-            c -= if spine_isupper(c) != 0 {
+            c -= if spine38_isupper(c) != 0 {
                 'A' as i32 - 10 as c_int
             } else {
                 'a' as i32 - 10 as c_int
@@ -809,7 +812,7 @@ pub unsafe extern "C" fn spine_strtoul(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn spine_strrchr(mut p: *const c_char, ch: c_int) -> *mut c_char {
+pub unsafe extern "C" fn spine38_strrchr(mut p: *const c_char, ch: c_int) -> *mut c_char {
     let mut save: *mut c_char = std::ptr::null_mut::<c_char>();
     loop {
         if *p as c_int == ch {
@@ -1207,7 +1210,7 @@ pub(crate) fn sprintf(c_str: *mut c_char, c_format: *const c_char, args: &[Box<d
     let result = fmt(&format, args);
     unsafe {
         let str = CString::new(result).unwrap();
-        spine_strcpy(c_str, str.as_ptr());
+        spine38_strcpy(c_str, str.as_ptr());
     }
 }
 
@@ -1246,11 +1249,11 @@ mod tests {
 
     use crate::c::{
         c_uint,
-        environment::spine_strncpy,
-        wasm::{spine_strtol, spine_strtoul},
+        environment::spine38_strncpy,
+        wasm::{spine38_strtol, spine38_strtoul},
     };
 
-    use super::{spine_strlen, Allocator};
+    use super::{spine38_strlen, Allocator};
 
     #[test]
     fn allocator() {
@@ -1280,9 +1283,9 @@ mod tests {
     fn strlen() {
         unsafe {
             let empty = CString::new("").unwrap();
-            assert_eq!(spine_strlen(empty.as_ptr()), 0);
+            assert_eq!(spine38_strlen(empty.as_ptr()), 0);
             let hello_world = CString::new("hello world").unwrap();
-            assert_eq!(spine_strlen(hello_world.as_ptr()), 11);
+            assert_eq!(spine38_strlen(hello_world.as_ptr()), 11);
         }
     }
 
@@ -1291,19 +1294,19 @@ mod tests {
         unsafe {
             let mut dst: [super::c_char; 255] = [0; 255];
             let src = CString::new("1234 hello world").unwrap();
-            spine_strncpy(dst.as_mut_ptr(), src.as_ptr(), 255);
+            spine38_strncpy(dst.as_mut_ptr(), src.as_ptr(), 255);
             let string = CStr::from_ptr(dst.as_ptr()).to_string_lossy().to_string();
             assert_eq!(string.as_str(), "1234 hello world");
 
             let mut dst: [super::c_char; 10] = [10; 10];
             let src = CString::new("1234 hello world").unwrap();
-            spine_strncpy(dst.as_mut_ptr(), src.as_ptr(), 10);
+            spine38_strncpy(dst.as_mut_ptr(), src.as_ptr(), 10);
             let string = CStr::from_ptr(dst.as_ptr()).to_string_lossy().to_string();
             assert_eq!(string.as_str(), "1234 hello"); //strcpy doesn't add null byte
 
             let mut dst: [super::c_char; 10] = [10; 10];
             let src = CString::new("1234").unwrap();
-            spine_strncpy(dst.as_mut_ptr(), src.as_ptr(), 10);
+            spine38_strncpy(dst.as_mut_ptr(), src.as_ptr(), 10);
             let string = CStr::from_ptr(dst.as_ptr()).to_string_lossy().to_string();
             assert_eq!(string.as_str(), "1234");
         }
@@ -1314,19 +1317,19 @@ mod tests {
         unsafe {
             let mut dst: [super::c_char; 255] = [0; 255];
             let src = CString::new("1234 hello world").unwrap();
-            spine_strncpy(dst.as_mut_ptr(), src.as_ptr(), 255);
+            spine38_strncpy(dst.as_mut_ptr(), src.as_ptr(), 255);
             let string = CStr::from_ptr(dst.as_ptr()).to_string_lossy().to_string();
             assert_eq!(string.as_str(), "1234 hello world");
 
             let mut dst: [super::c_char; 10] = [10; 10];
             let src = CString::new("1234 hello world").unwrap();
-            spine_strncpy(dst.as_mut_ptr(), src.as_ptr(), 10);
+            spine38_strncpy(dst.as_mut_ptr(), src.as_ptr(), 10);
             let string = CStr::from_ptr(dst.as_ptr()).to_string_lossy().to_string();
             assert!(string.starts_with("1234 hello")); //strncpy doesn't add null byte
 
             let mut dst: [super::c_char; 10] = [10; 10];
             let src = CString::new("1234").unwrap();
-            spine_strncpy(dst.as_mut_ptr(), src.as_ptr(), 10);
+            spine38_strncpy(dst.as_mut_ptr(), src.as_ptr(), 10);
             for item in dst.iter().skip(4) {
                 assert_eq!(*item, 0 as super::c_char);
             }
@@ -1340,13 +1343,13 @@ mod tests {
         unsafe {
             let str = CString::new("1234 hello world").unwrap();
             let mut endptr: *mut super::c_char = std::ptr::null_mut();
-            let value = spine_strtol(str.as_ptr(), &mut endptr, 10);
+            let value = spine38_strtol(str.as_ptr(), &mut endptr, 10);
             assert_eq!(value, 1234);
             assert_eq!(endptr.cast_const(), str.as_ptr().offset(4));
 
             let str = CString::new("hello world").unwrap();
             let mut endptr: *mut super::c_char = std::ptr::null_mut();
-            let value = spine_strtol(str.as_ptr(), &mut endptr, 10);
+            let value = spine38_strtol(str.as_ptr(), &mut endptr, 10);
             assert_eq!(value, 0);
             assert_eq!(endptr.cast_const(), str.as_ptr().offset(0));
         }
@@ -1357,13 +1360,13 @@ mod tests {
         unsafe {
             let str = CString::new("1234 hello world").unwrap();
             let mut endptr: *mut super::c_char = std::ptr::null_mut();
-            let value = spine_strtoul(str.as_ptr(), &mut endptr, 10);
+            let value = spine38_strtoul(str.as_ptr(), &mut endptr, 10);
             assert_eq!(value, 1234);
             assert_eq!(endptr.cast_const(), str.as_ptr().offset(4));
 
             let str = CString::new("hello world").unwrap();
             let mut endptr: *mut super::c_char = std::ptr::null_mut();
-            let value = spine_strtoul(str.as_ptr(), &mut endptr, 10);
+            let value = spine38_strtoul(str.as_ptr(), &mut endptr, 10);
             assert_eq!(value, 0);
             assert_eq!(endptr.cast_const(), str.as_ptr().offset(0));
         }

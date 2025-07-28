@@ -1,6 +1,6 @@
 use crate::{
     c::{
-        c_float, c_ushort, spAttachment, spMeshAttachment, spMeshAttachment_newLinkedMesh,
+        c_float, c_ushort, sp38MeshAttachment_newLinkedMesh, spAttachment, spMeshAttachment,
         spVertexAttachment,
     },
     c_interface::{NewFromPtr, SyncPtr},
@@ -41,7 +41,7 @@ impl MeshAttachment {
     pub fn new_linked_mesh(&self) -> Attachment {
         unsafe {
             Attachment::new_from_ptr(
-                spMeshAttachment_newLinkedMesh(self.c_ptr()).cast::<spAttachment>(),
+                sp38MeshAttachment_newLinkedMesh(self.c_ptr()).cast::<spAttachment>(),
             )
         }
     }

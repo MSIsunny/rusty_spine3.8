@@ -34,32 +34,32 @@ type size_t = libc::size_t;
 type FILE = libc::FILE;
 
 #[no_mangle]
-unsafe extern "C" fn spine_strlen(s: *const c_char) -> size_t {
+unsafe extern "C" fn spine38_strlen(s: *const c_char) -> size_t {
     libc::strlen(s)
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_strcmp(s1: *const c_char, s2: *const c_char) -> c_int {
+unsafe extern "C" fn spine38_strcmp(s1: *const c_char, s2: *const c_char) -> c_int {
     libc::strcmp(s1, s2)
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_strncmp(s1: *const c_char, s2: *const c_char, n: size_t) -> c_int {
+unsafe extern "C" fn spine38_strncmp(s1: *const c_char, s2: *const c_char, n: size_t) -> c_int {
     libc::strncmp(s1, s2, n)
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int {
+unsafe extern "C" fn spine38_strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int {
     libc::strcasecmp(s1, s2)
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_strcpy(dest: *mut c_char, src: *const c_char) -> *mut c_char {
+unsafe extern "C" fn spine38_strcpy(dest: *mut c_char, src: *const c_char) -> *mut c_char {
     libc::strcpy(dest, src)
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_strncpy(
+unsafe extern "C" fn spine38_strncpy(
     dest: *mut c_char,
     src: *const c_char,
     num: size_t,
@@ -68,7 +68,7 @@ unsafe extern "C" fn spine_strncpy(
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_strncat(
+unsafe extern "C" fn spine38_strncat(
     dest: *mut c_char,
     src: *const c_char,
     n: size_t,
@@ -77,7 +77,7 @@ unsafe extern "C" fn spine_strncat(
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_strtol(
+unsafe extern "C" fn spine38_strtol(
     nptr: *const c_char,
     endptr: *mut *mut c_char,
     base: c_int,
@@ -86,7 +86,7 @@ unsafe extern "C" fn spine_strtol(
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_strtoul(
+unsafe extern "C" fn spine38_strtoul(
     nptr: *const c_char,
     endptr: *mut *mut c_char,
     base: c_int,
@@ -95,7 +95,7 @@ unsafe extern "C" fn spine_strtoul(
 }
 
 #[no_mangle]
-unsafe extern "C" fn spine_strrchr(s: *const c_char, c: c_int) -> *mut c_char {
+unsafe extern "C" fn spine38_strrchr(s: *const c_char, c: c_int) -> *mut c_char {
     libc::strrchr(s, c)
 }
 

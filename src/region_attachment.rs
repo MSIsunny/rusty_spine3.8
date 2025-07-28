@@ -1,5 +1,5 @@
 use crate::{
-    c::{c_float, spAttachment, spRegionAttachment, spRegionAttachment_computeWorldVertices},
+    c::{c_float, sp38RegionAttachment_computeWorldVertices, spAttachment, spRegionAttachment},
     c_interface::SyncPtr,
     Bone, Color,
 };
@@ -48,7 +48,7 @@ impl RegionAttachment {
         offset: i32,
         stride: i32,
     ) {
-        spRegionAttachment_computeWorldVertices(
+        sp38RegionAttachment_computeWorldVertices(
             self.c_ptr() as *const spRegionAttachment as *mut spRegionAttachment,
             bone.c_ptr(),
             vertices.as_mut_ptr(),

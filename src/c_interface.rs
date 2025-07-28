@@ -913,7 +913,7 @@ macro_rules! c_vertex_attachment_accessors {
             offset: i32,
             stride: i32,
         ) {
-            crate::c::spVertexAttachment_computeWorldVertices(
+            crate::c::sp38VertexAttachment_computeWorldVertices(
                 self.vertex_attachment() as *const crate::c::spVertexAttachment
                     as *mut crate::c::spVertexAttachment,
                 slot.c_ptr(),

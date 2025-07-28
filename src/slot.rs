@@ -2,10 +2,10 @@ use crate::{
     attachment::Attachment,
     bone::Bone,
     c::{
+        sp38SlotData_setAttachmentName, sp38Slot_setAttachment, sp38Slot_setToSetupPose,
         spAttachment, spBlendMode, spBone, spBoneData, spBoundingBoxAttachment,
         spClippingAttachment, spMeshAttachment, spPointAttachment, spRegionAttachment, spSkeleton,
-        spSlot, spSlotData, spSlotData_setAttachmentName, spSlot_setAttachment,
-        spSlot_setToSetupPose,
+        spSlot, spSlotData,
     },
     c_interface::{to_c_str, CTmpRef, NewFromPtr, SyncPtr},
     AttachmentType, BoneData, BoundingBoxAttachment, ClippingAttachment, MeshAttachment,
@@ -62,10 +62,10 @@ impl Slot {
     pub unsafe fn set_attachment(&mut self, attachment: Option<Attachment>) {
         attachment.map_or_else(
             || {
-                spSlot_setAttachment(self.c_ptr(), std::ptr::null_mut());
+                sp38Slot_setAttachment(self.c_ptr(), std::ptr::null_mut());
             },
             |attachment| {
-                spSlot_setAttachment(self.c_ptr(), attachment.c_ptr());
+                sp38Slot_setAttachment(self.c_ptr(), attachment.c_ptr());
             },
         );
     }
@@ -73,7 +73,7 @@ impl Slot {
     /// Sets this slot to the setup pose.
     pub fn set_to_setup_pose(&mut self) {
         unsafe {
-            spSlot_setToSetupPose(self.c_ptr());
+            sp38Slot_setToSetupPose(self.c_ptr());
         }
     }
 
@@ -232,7 +232,7 @@ impl NewFromPtr<spSlotData> for SlotData {
 impl SlotData {
     pub fn set_attachment_name(&mut self, attachment_name: &str) {
         let c_attachment_name = to_c_str(attachment_name);
-        unsafe { spSlotData_setAttachmentName(self.c_ptr(), c_attachment_name.as_ptr()) }
+        unsafe { sp38SlotData_setAttachmentName(self.c_ptr(), c_attachment_name.as_ptr()) }
     }
 
     c_accessor!(

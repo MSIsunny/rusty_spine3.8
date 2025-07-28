@@ -6,8 +6,9 @@ use std::{
 
 use crate::{
     c::{
-        c_uchar, spSkeletonBinary, spSkeletonBinary_create, spSkeletonBinary_dispose,
-        spSkeletonBinary_readSkeletonData, spSkeletonBinary_readSkeletonDataFile,
+        c_uchar, sp38SkeletonBinary_create, sp38SkeletonBinary_dispose,
+        sp38SkeletonBinary_readSkeletonData, sp38SkeletonBinary_readSkeletonDataFile,
+        spSkeletonBinary,
     },
     c_interface::{from_c_str, SyncPtr},
     error::SpineError,
@@ -45,7 +46,7 @@ impl SkeletonBinary {
     /// ```
     #[must_use]
     pub fn new(atlas: Arc<Atlas>) -> Self {
-        let c_skeleton_binary = unsafe { spSkeletonBinary_create(atlas.c_ptr()) };
+        let c_skeleton_binary = unsafe { sp38SkeletonBinary_create(atlas.c_ptr()) };
         Self {
             c_skeleton_binary: SyncPtr(c_skeleton_binary),
             owns_memory: true,
@@ -61,7 +62,7 @@ impl SkeletonBinary {
     /// Returns [`SpineError::ParsingFailed`] if parsing of the binary data failed.
     pub fn read_skeleton_data(&self, data: &[u8]) -> Result<SkeletonData, SpineError> {
         let c_skeleton_data = unsafe {
-            spSkeletonBinary_readSkeletonData(
+            sp38SkeletonBinary_readSkeletonData(
                 self.c_skeleton_binary.0,
                 data.as_ptr().cast::<c_uchar>(),
                 data.len() as i32,
@@ -92,7 +93,7 @@ impl SkeletonBinary {
         };
         let c_path = CString::new(path_str)?;
         let c_skeleton_data = unsafe {
-            spSkeletonBinary_readSkeletonDataFile(self.c_skeleton_binary.0, c_path.as_ptr())
+            sp38SkeletonBinary_readSkeletonDataFile(self.c_skeleton_binary.0, c_path.as_ptr())
         };
         if !c_skeleton_data.is_null() {
             Ok(SkeletonData::new(c_skeleton_data, self.atlas.clone()))
@@ -121,7 +122,7 @@ impl Drop for SkeletonBinary {
     fn drop(&mut self) {
         if self.owns_memory {
             unsafe {
-                spSkeletonBinary_dispose(self.c_skeleton_binary.0);
+                sp38SkeletonBinary_dispose(self.c_skeleton_binary.0);
             }
         }
     }

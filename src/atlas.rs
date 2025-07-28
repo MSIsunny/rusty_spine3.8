@@ -2,12 +2,12 @@ use std::ffi::CString;
 use std::{path::Path, ptr::null_mut};
 
 use crate::c::{
-    spAtlasFilter, spAtlasFormat, spAtlasRegion, spAtlasWrap, spAtlas_createFromFile,
-    spAtlas_create_from_folder,
+    sp38Atlas_createFromFile, sp38Atlas_create_from_folder, spAtlasFilter, spAtlasFormat,
+    spAtlasRegion, spAtlasWrap,
 };
 use crate::c_interface::{CTmpRef, NewFromPtr, SyncPtr};
 use crate::{
-    c::{c_int, spAtlas, spAtlasPage, spAtlas_create, spAtlas_dispose},
+    c::{c_int, sp38Atlas_create, sp38Atlas_dispose, spAtlas, spAtlasPage},
     error::SpineError,
 };
 
@@ -58,7 +58,7 @@ impl Atlas {
         };
         let c_dir = CString::new(dir_path)?;
         let c_atlas = unsafe {
-            spAtlas_create(
+            sp38Atlas_create(
                 c_data.as_ptr(),
                 data.len() as c_int,
                 c_dir.as_ptr(),
@@ -90,7 +90,7 @@ impl Atlas {
             return Err(SpineError::PathNotUtf8);
         };
         let c_path = CString::new(path_str)?;
-        let c_atlas = unsafe { spAtlas_createFromFile(c_path.as_ptr(), null_mut()) };
+        let c_atlas = unsafe { sp38Atlas_createFromFile(c_path.as_ptr(), null_mut()) };
         if !c_atlas.is_null() {
             Ok(Self {
                 c_atlas: SyncPtr(c_atlas),
@@ -113,7 +113,7 @@ impl Atlas {
         SpineError,
     > {
         let path = path.to_string();
-        let atlas_and_imgs = unsafe { spAtlas_create_from_folder(&path) };
+        let atlas_and_imgs = unsafe { sp38Atlas_create_from_folder(&path) };
 
         let c_atlas = atlas_and_imgs.atlas;
         let imgs = unsafe { Box::from_raw(atlas_and_imgs.imgs) };
@@ -169,7 +169,7 @@ impl Drop for Atlas {
     fn drop(&mut self) {
         if self.owns_memory {
             unsafe {
-                spAtlas_dispose(self.c_atlas.0);
+                sp38Atlas_dispose(self.c_atlas.0);
             }
         }
     }

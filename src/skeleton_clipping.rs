@@ -1,8 +1,9 @@
 use crate::{
     c::{
-        spSkeletonClipping, spSkeletonClipping_clipEnd, spSkeletonClipping_clipEnd2,
-        spSkeletonClipping_clipStart, spSkeletonClipping_clipTriangles, spSkeletonClipping_create,
-        spSkeletonClipping_dispose, spSkeletonClipping_isClipping,
+        sp38SkeletonClipping_clipEnd, sp38SkeletonClipping_clipEnd2,
+        sp38SkeletonClipping_clipStart, sp38SkeletonClipping_clipTriangles,
+        sp38SkeletonClipping_create, sp38SkeletonClipping_dispose, sp38SkeletonClipping_isClipping,
+        spSkeletonClipping,
     },
     c_interface::SyncPtr,
     clipping_attachment::ClippingAttachment,
@@ -31,32 +32,32 @@ impl SkeletonClipping {
     #[must_use]
     pub fn new() -> Self {
         Self {
-            c_skeleton_clipping: unsafe { SyncPtr(spSkeletonClipping_create()) },
+            c_skeleton_clipping: unsafe { SyncPtr(sp38SkeletonClipping_create()) },
             owns_memory: true,
         }
     }
 
     pub fn clip_start(&mut self, slot: &Slot, clip: &ClippingAttachment) {
         unsafe {
-            spSkeletonClipping_clipStart(self.c_ptr_mut(), slot.c_ptr(), clip.c_ptr());
+            sp38SkeletonClipping_clipStart(self.c_ptr_mut(), slot.c_ptr(), clip.c_ptr());
         }
     }
 
     pub fn clip_end(&mut self, slot: &Slot) {
         unsafe {
-            spSkeletonClipping_clipEnd(self.c_ptr_mut(), slot.c_ptr());
+            sp38SkeletonClipping_clipEnd(self.c_ptr_mut(), slot.c_ptr());
         }
     }
 
     pub fn clip_end2(&mut self) {
         unsafe {
-            spSkeletonClipping_clipEnd2(self.c_ptr_mut());
+            sp38SkeletonClipping_clipEnd2(self.c_ptr_mut());
         }
     }
 
     #[must_use]
     pub fn is_clipping(&self) -> bool {
-        unsafe { spSkeletonClipping_isClipping(self.c_ptr_mut()) != 0 }
+        unsafe { sp38SkeletonClipping_isClipping(self.c_ptr_mut()) != 0 }
     }
 
     /// # Safety
@@ -69,7 +70,7 @@ impl SkeletonClipping {
         uvs: &mut [[f32; 2]],
         stride: i32,
     ) {
-        spSkeletonClipping_clipTriangles(
+        sp38SkeletonClipping_clipTriangles(
             self.c_ptr(),
             vertices.as_mut_ptr().cast::<f32>(),
             vertices.len() as i32,
@@ -97,7 +98,7 @@ impl Drop for SkeletonClipping {
     fn drop(&mut self) {
         if self.owns_memory {
             unsafe {
-                spSkeletonClipping_dispose(self.c_skeleton_clipping.0);
+                sp38SkeletonClipping_dispose(self.c_skeleton_clipping.0);
             }
         }
     }

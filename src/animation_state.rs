@@ -4,14 +4,15 @@ use crate::{
     animation::Animation,
     animation_state_data::AnimationStateData,
     c::{
-        c_void, spAnimation, spAnimationState, spAnimationStateData, spAnimationState_addAnimation,
-        spAnimationState_addAnimationByName, spAnimationState_addEmptyAnimation,
-        spAnimationState_apply, spAnimationState_clearListenerNotifications,
-        spAnimationState_clearTrack, spAnimationState_clearTracks, spAnimationState_create,
-        spAnimationState_dispose, spAnimationState_disposeStatics, spAnimationState_getCurrent,
-        spAnimationState_setAnimation, spAnimationState_setAnimationByName,
-        spAnimationState_setEmptyAnimation, spAnimationState_setEmptyAnimations,
-        spAnimationState_update, spEvent, spEventType, spTrackEntry, spTrackEntry_getAnimationTime,
+        c_void, sp38AnimationState_addAnimation, sp38AnimationState_addAnimationByName,
+        sp38AnimationState_addEmptyAnimation, sp38AnimationState_apply,
+        sp38AnimationState_clearListenerNotifications, sp38AnimationState_clearTrack,
+        sp38AnimationState_clearTracks, sp38AnimationState_create, sp38AnimationState_dispose,
+        sp38AnimationState_disposeStatics, sp38AnimationState_getCurrent,
+        sp38AnimationState_setAnimation, sp38AnimationState_setAnimationByName,
+        sp38AnimationState_setEmptyAnimation, sp38AnimationState_setEmptyAnimations,
+        sp38AnimationState_update, sp38TrackEntry_getAnimationTime, spAnimation, spAnimationState,
+        spAnimationStateData, spEvent, spEventType, spTrackEntry,
     },
     c_interface::{to_c_str, CTmpMut, CTmpRef, NewFromPtr, SyncPtr},
     error::SpineError,
@@ -47,7 +48,7 @@ impl NewFromPtr<spAnimationState> for AnimationState {
 impl AnimationState {
     #[must_use]
     pub fn new(animation_state_data: Arc<AnimationStateData>) -> Self {
-        let c_animation_state = unsafe { spAnimationState_create(animation_state_data.c_ptr()) };
+        let c_animation_state = unsafe { sp38AnimationState_create(animation_state_data.c_ptr()) };
         unsafe {
             (*c_animation_state).userData =
                 (Box::leak(Box::default()) as *mut AnimationStateUserData).cast::<c_void>();
@@ -61,25 +62,25 @@ impl AnimationState {
 
     pub fn update(&mut self, delta: f32) {
         unsafe {
-            spAnimationState_update(self.c_ptr(), delta);
+            sp38AnimationState_update(self.c_ptr(), delta);
         }
     }
 
     pub fn apply(&self, skeleton: &mut Skeleton) -> bool {
-        unsafe { spAnimationState_apply(self.c_animation_state.0, skeleton.c_ptr()) != 0 }
+        unsafe { sp38AnimationState_apply(self.c_animation_state.0, skeleton.c_ptr()) != 0 }
     }
 
     /// Clears all animations in all track entries in this animation state.
     pub fn clear_tracks(&mut self) {
         unsafe {
-            spAnimationState_clearTracks(self.c_ptr());
+            sp38AnimationState_clearTracks(self.c_ptr());
         }
     }
 
     /// Clears animations for the given track entry index in this animation state.
     pub fn clear_track(&mut self, track_index: usize) {
         unsafe {
-            spAnimationState_clearTrack(self.c_ptr(), track_index as i32);
+            sp38AnimationState_clearTrack(self.c_ptr(), track_index as i32);
         }
     }
 
@@ -100,7 +101,7 @@ impl AnimationState {
         let c_animation_name = to_c_str(animation_name);
         CTmpMut::new(
             self,
-            TrackEntry::new_from_ptr(spAnimationState_setAnimationByName(
+            TrackEntry::new_from_ptr(sp38AnimationState_setAnimationByName(
                 self.c_ptr(),
                 track_index as i32,
                 c_animation_name.as_ptr(),
@@ -146,7 +147,7 @@ impl AnimationState {
         unsafe {
             CTmpMut::new(
                 self,
-                TrackEntry::new_from_ptr(spAnimationState_setAnimation(
+                TrackEntry::new_from_ptr(sp38AnimationState_setAnimation(
                     self.c_ptr(),
                     track_index as i32,
                     animation.c_ptr(),
@@ -174,7 +175,7 @@ impl AnimationState {
         let c_animation_name = to_c_str(animation_name);
         CTmpMut::new(
             self,
-            TrackEntry::new_from_ptr(spAnimationState_addAnimationByName(
+            TrackEntry::new_from_ptr(sp38AnimationState_addAnimationByName(
                 self.c_ptr(),
                 track_index as i32,
                 c_animation_name.as_ptr(),
@@ -223,7 +224,7 @@ impl AnimationState {
         unsafe {
             CTmpMut::new(
                 self,
-                TrackEntry::new_from_ptr(spAnimationState_addAnimation(
+                TrackEntry::new_from_ptr(sp38AnimationState_addAnimation(
                     self.c_ptr(),
                     track_index as i32,
                     animation.c_ptr(),
@@ -242,7 +243,7 @@ impl AnimationState {
         unsafe {
             CTmpMut::new(
                 self,
-                TrackEntry::new_from_ptr(spAnimationState_setEmptyAnimation(
+                TrackEntry::new_from_ptr(sp38AnimationState_setEmptyAnimation(
                     self.c_ptr(),
                     track_index as i32,
                     mix_duration,
@@ -260,7 +261,7 @@ impl AnimationState {
         unsafe {
             CTmpMut::new(
                 self,
-                TrackEntry::new_from_ptr(spAnimationState_addEmptyAnimation(
+                TrackEntry::new_from_ptr(sp38AnimationState_addEmptyAnimation(
                     self.c_ptr(),
                     track_index as i32,
                     mix_duration,
@@ -272,14 +273,14 @@ impl AnimationState {
 
     pub fn set_empty_animations(&mut self, mix_duration: f32) {
         unsafe {
-            spAnimationState_setEmptyAnimations(self.c_ptr(), mix_duration);
+            sp38AnimationState_setEmptyAnimations(self.c_ptr(), mix_duration);
         }
     }
 
     #[must_use]
     pub fn get_current(&self, track_index: usize) -> Option<CTmpRef<Self, TrackEntry>> {
         unsafe {
-            let ptr = spAnimationState_getCurrent(self.c_ptr(), track_index as i32);
+            let ptr = sp38AnimationState_getCurrent(self.c_ptr(), track_index as i32);
             if !ptr.is_null() {
                 Some(CTmpRef::new(self, TrackEntry::new_from_ptr(ptr)))
             } else {
@@ -410,7 +411,7 @@ impl AnimationState {
 
     pub fn clear_listener_notifications(&mut self) {
         unsafe {
-            spAnimationState_clearListenerNotifications(self.c_ptr());
+            sp38AnimationState_clearListenerNotifications(self.c_ptr());
         }
     }
 
@@ -449,7 +450,7 @@ impl AnimationState {
 
     pub fn dispose_statics() {
         unsafe {
-            spAnimationState_disposeStatics();
+            sp38AnimationState_disposeStatics();
         }
     }
     c_ptr!(c_animation_state, spAnimationState);
@@ -467,7 +468,7 @@ impl Drop for AnimationState {
                 ));
             }
             unsafe {
-                spAnimationState_dispose(self.c_animation_state.0);
+                sp38AnimationState_dispose(self.c_animation_state.0);
             }
         }
     }
@@ -538,7 +539,7 @@ impl TrackEntry {
     /// [`animation_end`](`Self::animation_end`).
     #[must_use]
     pub fn animation_time(&self) -> f32 {
-        unsafe { spTrackEntry_getAnimationTime(self.c_ptr()) }
+        unsafe { sp38TrackEntry_getAnimationTime(self.c_ptr()) }
     }
 
     fn handle_valid(handle: &TrackEntryHandle) -> bool {

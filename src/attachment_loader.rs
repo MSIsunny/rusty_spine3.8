@@ -1,7 +1,7 @@
 use crate::{
     c::{
-        spAtlasAttachmentLoader_create, spAttachmentLoader, spAttachmentLoader_createAttachment,
-        spAttachmentLoader_dispose,
+        sp38AtlasAttachmentLoader_create, sp38AttachmentLoader_createAttachment,
+        sp38AttachmentLoader_dispose, spAttachmentLoader,
     },
     c_interface::{NewFromPtr, SyncPtr},
     Atlas, Attachment, AttachmentType, RegionProps, Skin, SpineError,
@@ -29,7 +29,7 @@ impl AttachmentLoader {
     #[must_use]
     pub fn new_atlas_loader(atlas: &Atlas) -> Self {
         unsafe {
-            let atlas_attachment_loader = spAtlasAttachmentLoader_create(atlas.c_ptr());
+            let atlas_attachment_loader = sp38AtlasAttachmentLoader_create(atlas.c_ptr());
             let attachment_loader = &mut (*atlas_attachment_loader).super_0;
             Self::new_from_ptr(attachment_loader)
         }
@@ -57,7 +57,7 @@ impl AttachmentLoader {
             let c_path = c_path.as_ptr();
             let c_skin = skin.map_or(std::ptr::null_mut(), |skin| skin.c_ptr());
 
-            let attachment = spAttachmentLoader_createAttachment(
+            let attachment = sp38AttachmentLoader_createAttachment(
                 self.c_ptr(),
                 c_skin,
                 attachment_type as u32,
@@ -106,7 +106,7 @@ impl AttachmentLoader {
 impl Drop for AttachmentLoader {
     fn drop(&mut self) {
         unsafe {
-            spAttachmentLoader_dispose(self.c_ptr());
+            sp38AttachmentLoader_dispose(self.c_ptr());
         }
     }
 }

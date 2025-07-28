@@ -4,8 +4,8 @@ use crate::{
     animation::Animation,
     bone::BoneData,
     c::{
-        spAnimation, spBoneData, spIkConstraintData, spPathConstraintData, spSkeletonData,
-        spSkeletonData_dispose, spSkin, spSlotData, spTransformConstraintData,
+        sp38SkeletonData_dispose, spAnimation, spBoneData, spIkConstraintData,
+        spPathConstraintData, spSkeletonData, spSkin, spSlotData, spTransformConstraintData,
     },
     c_interface::{CTmpRef, NewFromPtr, SyncPtr},
     skin::Skin,
@@ -250,7 +250,7 @@ impl Drop for SkeletonData {
     fn drop(&mut self) {
         if self.owns_memory {
             unsafe {
-                spSkeletonData_dispose(self.c_skeleton_data.0);
+                sp38SkeletonData_dispose(self.c_skeleton_data.0);
             }
         }
     }

@@ -3,9 +3,9 @@ use std::sync::Arc;
 use crate::{
     animation::Animation,
     c::{
-        c_void, spAnimationStateData, spAnimationStateData_create, spAnimationStateData_dispose,
-        spAnimationStateData_getMix, spAnimationStateData_setMix,
-        spAnimationStateData_setMixByName, spSkeletonData,
+        c_void, sp38AnimationStateData_create, sp38AnimationStateData_dispose,
+        sp38AnimationStateData_getMix, sp38AnimationStateData_setMix,
+        sp38AnimationStateData_setMixByName, spAnimationStateData, spSkeletonData,
     },
     c_interface::{to_c_str, NewFromPtr, SyncPtr},
     skeleton_data::SkeletonData,
@@ -58,7 +58,8 @@ impl NewFromPtr<spAnimationStateData> for AnimationStateData {
 impl AnimationStateData {
     #[must_use]
     pub fn new(skeleton_data: Arc<SkeletonData>) -> Self {
-        let c_animation_state_data = unsafe { spAnimationStateData_create(skeleton_data.c_ptr()) };
+        let c_animation_state_data =
+            unsafe { sp38AnimationStateData_create(skeleton_data.c_ptr()) };
         Self {
             c_animation_state_data: SyncPtr(c_animation_state_data),
             owns_memory: true,
@@ -70,7 +71,7 @@ impl AnimationStateData {
         let c_from_name = to_c_str(from_name);
         let c_to_name = to_c_str(to_name);
         unsafe {
-            spAnimationStateData_setMixByName(
+            sp38AnimationStateData_setMixByName(
                 self.c_ptr(),
                 c_from_name.as_ptr(),
                 c_to_name.as_ptr(),
@@ -81,12 +82,12 @@ impl AnimationStateData {
 
     pub fn set_mix(&mut self, from: &Animation, to: &Animation, duration: f32) {
         unsafe {
-            spAnimationStateData_setMix(self.c_ptr(), from.c_ptr(), to.c_ptr(), duration);
+            sp38AnimationStateData_setMix(self.c_ptr(), from.c_ptr(), to.c_ptr(), duration);
         }
     }
 
     pub fn get_mix(&mut self, from: &Animation, to: &Animation) -> f32 {
-        unsafe { spAnimationStateData_getMix(self.c_ptr(), from.c_ptr(), to.c_ptr()) }
+        unsafe { sp38AnimationStateData_getMix(self.c_ptr(), from.c_ptr(), to.c_ptr()) }
     }
 
     c_accessor_tmp_ptr_mut!(
@@ -105,7 +106,7 @@ impl Drop for AnimationStateData {
     fn drop(&mut self) {
         if self.owns_memory {
             unsafe {
-                spAnimationStateData_dispose(self.c_animation_state_data.0);
+                sp38AnimationStateData_dispose(self.c_animation_state_data.0);
             }
         }
     }

@@ -3,13 +3,12 @@ use std::{borrow::Cow, sync::Arc};
 use crate::{
     bone::Bone,
     c::{
-        spBone, spIkConstraint, spPathConstraint, spSkeleton, spSkeletonData, spSkeleton_create,
-        spSkeleton_dispose, spSkeleton_getAttachmentForSlotIndex,
-        spSkeleton_getAttachmentForSlotName, spSkeleton_setAttachment,
-        spSkeleton_setBonesToSetupPose, spSkeleton_setSkin, spSkeleton_setSkinByName,
-        spSkeleton_setSlotsToSetupPose, spSkeleton_setToSetupPose, spSkeleton_update,
-        spSkeleton_updateCache, spSkeleton_updateWorldTransform, spSkin, spSlot,
-        spTransformConstraint,
+        sp38Skeleton_create, sp38Skeleton_dispose, sp38Skeleton_getAttachmentForSlotIndex,
+        sp38Skeleton_getAttachmentForSlotName, sp38Skeleton_setAttachment,
+        sp38Skeleton_setBonesToSetupPose, sp38Skeleton_setSkin, sp38Skeleton_setSkinByName,
+        sp38Skeleton_setSlotsToSetupPose, sp38Skeleton_setToSetupPose, sp38Skeleton_update,
+        sp38Skeleton_updateCache, sp38Skeleton_updateWorldTransform, spBone, spIkConstraint,
+        spPathConstraint, spSkeleton, spSkeletonData, spSkin, spSlot, spTransformConstraint,
     },
     c_interface::{to_c_str, CTmpMut, CTmpRef, NewFromPtr, SyncPtr},
     error::SpineError,
@@ -42,7 +41,7 @@ impl Skeleton {
     /// See [`SkeletonJson`] or [`SkeletonBinary`] for a complete example of loading a skeleton.
     #[must_use]
     pub fn new(skeleton_data: Arc<SkeletonData>) -> Self {
-        let c_skeleton = unsafe { spSkeleton_create(skeleton_data.c_ptr()) };
+        let c_skeleton = unsafe { sp38Skeleton_create(skeleton_data.c_ptr()) };
         Self {
             c_skeleton: SyncPtr(c_skeleton),
             owns_memory: true,
@@ -53,7 +52,7 @@ impl Skeleton {
 
     pub fn update(&mut self, delta: f32) {
         unsafe {
-            spSkeleton_update(self.c_ptr(), delta);
+            sp38Skeleton_update(self.c_ptr(), delta);
         }
     }
 
@@ -61,7 +60,7 @@ impl Skeleton {
     /// bones, constraints, or weighted path attachments are added or removed.
     pub fn update_cache(&mut self) {
         unsafe {
-            spSkeleton_updateCache(self.c_ptr());
+            sp38Skeleton_updateCache(self.c_ptr());
         }
     }
 
@@ -72,28 +71,28 @@ impl Skeleton {
     /// in the Spine Runtimes Guide.
     pub fn update_world_transform(&mut self) {
         unsafe {
-            spSkeleton_updateWorldTransform(self.c_ptr());
+            sp38Skeleton_updateWorldTransform(self.c_ptr());
         }
     }
 
     /// Sets the bones, constraints, slots, and draw order to their setup pose values.
     pub fn set_to_setup_pose(&mut self) {
         unsafe {
-            spSkeleton_setToSetupPose(self.c_ptr());
+            sp38Skeleton_setToSetupPose(self.c_ptr());
         }
     }
 
     /// Sets the bones and constraints to their setup pose values.
     pub fn set_bones_to_setup_pose(&mut self) {
         unsafe {
-            spSkeleton_setBonesToSetupPose(self.c_ptr());
+            sp38Skeleton_setBonesToSetupPose(self.c_ptr());
         }
     }
 
     /// Sets the slots and draw order to their setup pose values.
     pub fn set_slots_to_setup_pose(&mut self) {
         unsafe {
-            spSkeleton_setSlotsToSetupPose(self.c_ptr());
+            sp38Skeleton_setSlotsToSetupPose(self.c_ptr());
         }
     }
 
@@ -107,10 +106,10 @@ impl Skeleton {
     pub unsafe fn set_skin(&mut self, skin: &Skin) {
         if skin.owns_memory {
             let cloned_skin = skin.clone();
-            unsafe { spSkeleton_setSkin(self.c_ptr(), cloned_skin.c_ptr()) };
+            unsafe { sp38Skeleton_setSkin(self.c_ptr(), cloned_skin.c_ptr()) };
             self._skin = Some(cloned_skin);
         } else {
-            unsafe { spSkeleton_setSkin(self.c_ptr(), skin.c_ptr()) };
+            unsafe { sp38Skeleton_setSkin(self.c_ptr(), skin.c_ptr()) };
             self._skin = None;
         }
         self.set_to_setup_pose();
@@ -126,7 +125,7 @@ impl Skeleton {
     /// implementation. Skins assigned to a skeleton must live as long as the skeletons using them
     /// or else the skeleton may cause a segfault.
     pub unsafe fn set_skin_unchecked(&mut self, skin: &Skin) {
-        spSkeleton_setSkin(self.c_ptr(), skin.c_ptr());
+        sp38Skeleton_setSkin(self.c_ptr(), skin.c_ptr());
     }
 
     /// Set the skeleton's skin by name.
@@ -138,7 +137,7 @@ impl Skeleton {
     /// exist.
     pub unsafe fn set_skin_by_name_unchecked(&mut self, skin_name: &str) {
         let c_skin_name = to_c_str(skin_name);
-        spSkeleton_setSkinByName(self.c_ptr(), c_skin_name.as_ptr());
+        sp38Skeleton_setSkinByName(self.c_ptr(), c_skin_name.as_ptr());
         self._skin = None;
     }
 
@@ -287,12 +286,13 @@ impl Skeleton {
         let c_slot_name = to_c_str(slot_name);
         attachment_name.map_or_else(
             || unsafe {
-                spSkeleton_setAttachment(self.c_ptr(), c_slot_name.as_ptr(), std::ptr::null()) != 0
+                sp38Skeleton_setAttachment(self.c_ptr(), c_slot_name.as_ptr(), std::ptr::null())
+                    != 0
             },
             |attachment_name| {
                 let c_attachment_name = to_c_str(attachment_name);
                 unsafe {
-                    spSkeleton_setAttachment(
+                    sp38Skeleton_setAttachment(
                         self.c_ptr(),
                         c_slot_name.as_ptr(),
                         c_attachment_name.as_ptr(),
@@ -310,7 +310,7 @@ impl Skeleton {
         let c_slot_name = to_c_str(slot_name);
         let c_attachment_name = to_c_str(attachment_name);
         unsafe {
-            let c_attachment = spSkeleton_getAttachmentForSlotName(
+            let c_attachment = sp38Skeleton_getAttachmentForSlotName(
                 self.c_ptr(),
                 c_slot_name.as_ptr(),
                 c_attachment_name.as_ptr(),
@@ -330,7 +330,7 @@ impl Skeleton {
     ) -> Option<Attachment> {
         let c_attachment_name = to_c_str(attachment_name);
         unsafe {
-            let c_attachment = spSkeleton_getAttachmentForSlotIndex(
+            let c_attachment = sp38Skeleton_getAttachmentForSlotIndex(
                 self.c_ptr(),
                 slot_index as i32,
                 c_attachment_name.as_ptr(),
@@ -545,7 +545,7 @@ impl Drop for Skeleton {
     fn drop(&mut self) {
         if self.owns_memory {
             unsafe {
-                spSkeleton_dispose(self.c_skeleton.0);
+                sp38Skeleton_dispose(self.c_skeleton.0);
             }
         }
     }

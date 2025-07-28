@@ -1,8 +1,8 @@
 use crate::{
     bone::Bone,
     c::{
-        spAttachment, spPointAttachment, spPointAttachment_computeWorldPosition,
-        spPointAttachment_computeWorldRotation,
+        sp38PointAttachment_computeWorldPosition, sp38PointAttachment_computeWorldRotation,
+        spAttachment, spPointAttachment,
     },
     c_interface::{NewFromPtr, SyncPtr},
 };
@@ -36,14 +36,14 @@ impl PointAttachment {
         let mut x = 0.;
         let mut y = 0.;
         unsafe {
-            spPointAttachment_computeWorldPosition(self.c_ptr(), bone.c_ptr(), &mut x, &mut y);
+            sp38PointAttachment_computeWorldPosition(self.c_ptr(), bone.c_ptr(), &mut x, &mut y);
         }
         (x, y)
     }
 
     #[must_use]
     pub fn compute_world_rotation(&self, bone: &Bone) -> f32 {
-        unsafe { spPointAttachment_computeWorldRotation(self.c_ptr(), bone.c_ptr()) }
+        unsafe { sp38PointAttachment_computeWorldRotation(self.c_ptr(), bone.c_ptr()) }
     }
 
     c_attachment_accessors!();

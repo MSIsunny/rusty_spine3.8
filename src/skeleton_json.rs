@@ -6,8 +6,8 @@ use std::{
 
 use crate::{
     c::{
-        spSkeletonJson, spSkeletonJson_create, spSkeletonJson_dispose,
-        spSkeletonJson_readSkeletonData, spSkeletonJson_readSkeletonDataFile,
+        sp38SkeletonJson_create, sp38SkeletonJson_dispose, sp38SkeletonJson_readSkeletonData,
+        sp38SkeletonJson_readSkeletonDataFile, spSkeletonJson,
     },
     c_interface::{from_c_str, SyncPtr},
     error::SpineError,
@@ -45,7 +45,7 @@ impl SkeletonJson {
     /// ```
     #[must_use]
     pub fn new(atlas: Arc<Atlas>) -> Self {
-        let c_skeleton_json = unsafe { spSkeletonJson_create(atlas.c_ptr()) };
+        let c_skeleton_json = unsafe { sp38SkeletonJson_create(atlas.c_ptr()) };
         Self {
             c_skeleton_json: SyncPtr(c_skeleton_json),
             owns_memory: true,
@@ -61,7 +61,7 @@ impl SkeletonJson {
     pub fn read_skeleton_data(&self, json: &[u8]) -> Result<SkeletonData, SpineError> {
         let c_json = CString::new(json)?;
         let c_skeleton_data =
-            unsafe { spSkeletonJson_readSkeletonData(self.c_skeleton_json.0, c_json.as_ptr()) };
+            unsafe { sp38SkeletonJson_readSkeletonData(self.c_skeleton_json.0, c_json.as_ptr()) };
         if !c_skeleton_data.is_null() {
             Ok(SkeletonData::new(c_skeleton_data, self.atlas.clone()))
         } else {
@@ -85,8 +85,9 @@ impl SkeletonJson {
             return Err(SpineError::PathNotUtf8);
         };
         let c_path = CString::new(path_str)?;
-        let c_skeleton_data =
-            unsafe { spSkeletonJson_readSkeletonDataFile(self.c_skeleton_json.0, c_path.as_ptr()) };
+        let c_skeleton_data = unsafe {
+            sp38SkeletonJson_readSkeletonDataFile(self.c_skeleton_json.0, c_path.as_ptr())
+        };
         if !c_skeleton_data.is_null() {
             Ok(SkeletonData::new(c_skeleton_data, self.atlas.clone()))
         } else {
@@ -114,7 +115,7 @@ impl Drop for SkeletonJson {
     fn drop(&mut self) {
         if self.owns_memory {
             unsafe {
-                spSkeletonJson_dispose(self.c_skeleton_json.0);
+                sp38SkeletonJson_dispose(self.c_skeleton_json.0);
             }
         }
     }

@@ -1,10 +1,10 @@
 use crate::{
     c::{
-        spBone, spBoneData, spBone_getWorldRotationX, spBone_getWorldRotationY,
-        spBone_getWorldScaleX, spBone_getWorldScaleY, spBone_isYDown, spBone_localToWorld,
-        spBone_rotateWorld, spBone_setToSetupPose, spBone_setYDown, spBone_updateAppliedTransform,
-        spBone_updateWorldTransform, spBone_updateWorldTransformWith, spBone_worldToLocal,
-        spBone_worldToLocalRotation, spSkeleton,
+        sp38Bone_getWorldRotationX, sp38Bone_getWorldRotationY, sp38Bone_getWorldScaleX,
+        sp38Bone_getWorldScaleY, sp38Bone_isYDown, sp38Bone_localToWorld, sp38Bone_rotateWorld,
+        sp38Bone_setToSetupPose, sp38Bone_setYDown, sp38Bone_updateAppliedTransform,
+        sp38Bone_updateWorldTransform, sp38Bone_updateWorldTransformWith, sp38Bone_worldToLocal,
+        sp38Bone_worldToLocalRotation, spBone, spBoneData, spSkeleton,
     },
     c_interface::{NewFromPtr, SyncPtr},
     Skeleton,
@@ -40,7 +40,7 @@ impl Bone {
     /// Sets this bone's local transform to the setup pose.
     pub fn set_to_setup_pose(&mut self) {
         unsafe {
-            spBone_setToSetupPose(self.c_ptr());
+            sp38Bone_setToSetupPose(self.c_ptr());
         }
     }
 
@@ -49,7 +49,7 @@ impl Bone {
     /// See [`update_world_transform_with`](`Self::update_world_transform_with`).
     pub fn update_world_transform(&mut self) {
         unsafe {
-            spBone_updateWorldTransform(self.c_ptr());
+            sp38Bone_updateWorldTransform(self.c_ptr());
         }
     }
 
@@ -71,7 +71,7 @@ impl Bone {
         shear_y: f32,
     ) {
         unsafe {
-            spBone_updateWorldTransformWith(
+            sp38Bone_updateWorldTransformWith(
                 self.c_ptr(),
                 x,
                 y,
@@ -95,34 +95,34 @@ impl Bone {
     /// transform used to compute the world transform, but may not be identical.
     pub fn update_applied_transform(&mut self) {
         unsafe {
-            spBone_updateAppliedTransform(self.c_ptr());
+            sp38Bone_updateAppliedTransform(self.c_ptr());
         }
     }
 
     /// The world rotation for the X axis, calculated using [`a`](`Self::a`) and [`c`](`Self::c`).
     #[must_use]
     pub fn world_rotation_x(&self) -> f32 {
-        unsafe { spBone_getWorldRotationX(self.c_ptr()) }
+        unsafe { sp38Bone_getWorldRotationX(self.c_ptr()) }
     }
 
     /// The world rotation for the Y axis, calculated using [`b`](`Self::b`) and [`d`](`Self::d`).
     #[must_use]
     pub fn world_rotation_y(&self) -> f32 {
-        unsafe { spBone_getWorldRotationY(self.c_ptr()) }
+        unsafe { sp38Bone_getWorldRotationY(self.c_ptr()) }
     }
 
     /// The magnitude (always positive) of the world scale X, calculated using [`a`](`Self::a`) and
     /// [`c`](`Self::c`).
     #[must_use]
     pub fn world_scale_x(&self) -> f32 {
-        unsafe { spBone_getWorldScaleX(self.c_ptr()) }
+        unsafe { sp38Bone_getWorldScaleX(self.c_ptr()) }
     }
 
     /// The magnitude (always positive) of the world scale Y, calculated using [`b`](`Self::b`) and
     /// [`d`](`Self::d`).
     #[must_use]
     pub fn world_scale_y(&self) -> f32 {
-        unsafe { spBone_getWorldScaleY(self.c_ptr()) }
+        unsafe { sp38Bone_getWorldScaleY(self.c_ptr()) }
     }
 
     /// Transforms a point from world coordinates to the bone's local coordinates.
@@ -131,7 +131,7 @@ impl Bone {
         let mut local_x: f32 = 0.;
         let mut local_y: f32 = 0.;
         unsafe {
-            spBone_worldToLocal(self.c_ptr(), world_x, world_y, &mut local_x, &mut local_y);
+            sp38Bone_worldToLocal(self.c_ptr(), world_x, world_y, &mut local_x, &mut local_y);
         }
         (local_x, local_y)
     }
@@ -142,7 +142,7 @@ impl Bone {
         let mut world_x: f32 = 0.;
         let mut world_y: f32 = 0.;
         unsafe {
-            spBone_localToWorld(self.c_ptr(), local_x, local_y, &mut world_x, &mut world_y);
+            sp38Bone_localToWorld(self.c_ptr(), local_x, local_y, &mut world_x, &mut world_y);
         }
         (world_x, world_y)
     }
@@ -150,13 +150,13 @@ impl Bone {
     /// Transforms a world rotation to a local rotation.
     #[must_use]
     pub fn world_to_local_rotation(&self, world_rotation: f32) -> f32 {
-        unsafe { spBone_worldToLocalRotation(self.c_ptr(), world_rotation) }
+        unsafe { sp38Bone_worldToLocalRotation(self.c_ptr(), world_rotation) }
     }
 
     /// Transforms a local rotation to a world rotation.
     #[must_use]
     pub fn local_to_world_rotation(&self, local_rotation: f32) -> f32 {
-        unsafe { spBone_worldToLocalRotation(self.c_ptr(), local_rotation) }
+        unsafe { sp38Bone_worldToLocalRotation(self.c_ptr(), local_rotation) }
     }
 
     /// Rotates the world transform the specified amount.
@@ -166,7 +166,7 @@ impl Bone {
     /// will need to be called on any child bones, recursively.
     pub fn rotate_world(&self, degrees: f32) {
         unsafe {
-            spBone_rotateWorld(self.c_ptr(), degrees);
+            sp38Bone_rotateWorld(self.c_ptr(), degrees);
         }
     }
 
@@ -399,13 +399,13 @@ impl Bone {
 
     pub fn set_y_down(y_down: bool) {
         unsafe {
-            spBone_setYDown(i32::from(y_down));
+            sp38Bone_setYDown(i32::from(y_down));
         }
     }
 
     #[must_use]
     pub fn is_y_down() -> bool {
-        unsafe { spBone_isYDown() != 0 }
+        unsafe { sp38Bone_isYDown() != 0 }
     }
 
     c_ptr!(c_bone, spBone);
@@ -551,7 +551,7 @@ impl Bone {
         shear: mint::Vector2<f32>,
     ) {
         unsafe {
-            spBone_updateWorldTransformWith(
+            sp38Bone_updateWorldTransformWith(
                 self.c_ptr(),
                 translation.x,
                 translation.y,

@@ -1,7 +1,7 @@
 use crate::{
     c::{
-        spSkeletonData, spSkin, spSkin_addSkin, spSkin_copySkin, spSkin_create, spSkin_dispose,
-        spSkin_getAttachments,
+        sp38Skin_addSkin, sp38Skin_copySkin, sp38Skin_create, sp38Skin_dispose,
+        sp38Skin_getAttachments, spSkeletonData, spSkin,
     },
     c_interface::{to_c_str, CTmpMut, CTmpRef, NewFromPtr, SyncPtr},
     Attachment, Skeleton, SkeletonData,
@@ -30,7 +30,7 @@ impl Skin {
     pub fn new(name: &str) -> Skin {
         let c_name = to_c_str(name);
         Self {
-            c_skin: SyncPtr(unsafe { spSkin_create(c_name.as_ptr()) }),
+            c_skin: SyncPtr(unsafe { sp38Skin_create(c_name.as_ptr()) }),
             owns_memory: true,
         }
     }
@@ -45,13 +45,13 @@ impl Skin {
     /// Skins must all originate from the same [`SkeletonData`].
     pub unsafe fn add_skin(&mut self, other: &Skin) {
         unsafe {
-            spSkin_addSkin(self.c_ptr_mut(), other.c_ptr());
+            sp38Skin_addSkin(self.c_ptr_mut(), other.c_ptr());
         }
     }
 
     pub fn copy_skin(&mut self, other: &Skin) {
         unsafe {
-            spSkin_copySkin(self.c_ptr_mut(), other.c_ptr());
+            sp38Skin_copySkin(self.c_ptr_mut(), other.c_ptr());
         }
     }
 
@@ -59,7 +59,7 @@ impl Skin {
     pub fn attachments(&self) -> Vec<AttachmentEntry> {
         let mut attachments = vec![];
         unsafe {
-            let mut entry = spSkin_getAttachments(self.c_ptr());
+            let mut entry = sp38Skin_getAttachments(self.c_ptr());
             while !entry.is_null() {
                 attachments.push(AttachmentEntry {
                     slot_index: (*entry).slotIndex,
@@ -88,7 +88,7 @@ impl Drop for Skin {
     fn drop(&mut self) {
         if self.owns_memory {
             unsafe {
-                spSkin_dispose(self.c_skin.0);
+                sp38Skin_dispose(self.c_skin.0);
             }
         }
     }
