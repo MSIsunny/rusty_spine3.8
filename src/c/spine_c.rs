@@ -20405,14 +20405,14 @@ fn get_files_in_dir(dir: &str, max_depth: u32, depth: u32) -> Vec<FileOrFolder> 
 
 fn handle_region_name(frame_path: &str) -> String {
     // 返回值应该为builds/build_name/symbol_name/frame_name
-    let mut name = frame_path;
+    let mut name = frame_path.replace("\\", "/");
     loop {
         let builds_index = name.find("builds/").unwrap_or(0);
         let region_name = &name[builds_index..];
         if region_name == name {
             break;
         }
-        name = region_name;
+        name = region_name.to_string();
     }
     let name = name.replace(".png", "");
     name.to_string()
