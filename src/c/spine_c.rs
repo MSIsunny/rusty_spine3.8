@@ -20568,7 +20568,17 @@ pub unsafe extern "C" fn sp38Atlas_create_from_folder(dir: &String) -> AtlasAndI
                 }
                 lastRegion = region;
                 (*region).page = page;
-                (*region).name = region_name.as_ptr();
+
+                let name = _sp38Malloc(
+                    (::core::mem::size_of::<c_char>() as c_ulong).wrapping_mul(
+                        (spine38_strlen(region_name.as_ptr())).wrapping_add(1 as c_int as c_ulong),
+                    ),
+                    b"spine.c\0" as *const u8 as *const c_char,
+                    3055 as c_int,
+                ) as *mut c_char;
+                spine38_strcpy(name, region_name.as_ptr());
+
+                (*region).name = name;
 
                 // init region
                 (*region).x = 0;
