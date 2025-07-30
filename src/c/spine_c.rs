@@ -20478,10 +20478,11 @@ fn handle_region_local_path(dir: &str, img_path: &str) -> String {
         dir.pop();
     }
     let work_dir = dir.split("/").last().unwrap_or("unknown");
+    let work_dir = format!("/{}/", work_dir);
 
     let mut name = img_path.replace("\\", "/");
     loop {
-        let index = name.find(work_dir).unwrap_or(0);
+        let index = name.find(&work_dir).unwrap_or(0);
         let s = &name[index..];
         if s == name {
             break;
@@ -20489,8 +20490,8 @@ fn handle_region_local_path(dir: &str, img_path: &str) -> String {
         name = s.to_string();
     }
 
-    if name.starts_with(work_dir) {
-        name = name[(work_dir.len() + 1)..].to_string();
+    if name.starts_with(&work_dir) {
+        name = name[work_dir.len()..].to_string();
     }
     name.replace(".png", "")
 }
