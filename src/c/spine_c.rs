@@ -20473,27 +20473,44 @@ fn get_files_with_ext_in_dir(dir: &str, ext: &str, max_depth: u32, depth: u32) -
 }
 
 fn handle_region_local_path(dir: &str, img_path: &str) -> String {
+    // 替换反斜杠并移除png拓展名
+    let img_path = img_path.replace("\\", "/").replace(".png", "");
     let mut dir = dir.replace("\\", "/");
+    // 移除文件夹末尾可能存在的斜杠
     if dir.ends_with("/") {
         dir.pop();
     }
+    // 如果img_path直接包含dir，相减得到文件名
+    match img_path.find(&dir) {
+        Some(index) => {
+            let name = &img_path[index + dir.len() + 1..]; // +1是因为要删去斜杠
+            return name.to_string();
+        }
+        None => {}
+    }
+    // 否则尝试计算相对路径
     let work_dir = dir.split("/").last().unwrap_or("unknown");
     let work_dir = format!("/{}/", work_dir);
-
-    let mut name = img_path.replace("\\", "/");
+    // 找到最后一个work_dir并移除
+    let mut name = img_path;
     loop {
-        let index = name.find(&work_dir).unwrap_or(0);
-        let s = &name[index..];
+        let index = name.find(&work_dir);
+        let s = match index {
+            Some(index) => {
+                (name[index + work_dir.len() - 1..]).to_string() // -1是因为要保留斜杠
+            }
+            None => break,
+        };
         if s == name {
             break;
         }
-        name = s.to_string();
+        name = s;
     }
-
-    if name.starts_with(&work_dir) {
-        name = name[work_dir.len()..].to_string();
+    // 移除开头的斜杠
+    if name.starts_with("/") {
+        name = (name[1..]).to_string();
     }
-    name.replace(".png", "")
+    name
 }
 
 #[repr(C)]
