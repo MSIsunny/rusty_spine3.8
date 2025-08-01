@@ -16427,7 +16427,7 @@ pub unsafe extern "C" fn sp38SkeletonJson_readSkeletonData(
                 (spine38_strlen(Json38_getString(
                     skeleton,
                     b"hash\0" as *const u8 as *const c_char,
-                    0 as *const c_char,
+                    b"null\0" as *const u8 as *const c_char,
                 )))
                 .wrapping_add(1 as c_int as c_ulong),
             ),
@@ -16439,7 +16439,7 @@ pub unsafe extern "C" fn sp38SkeletonJson_readSkeletonData(
             Json38_getString(
                 skeleton,
                 b"hash\0" as *const u8 as *const c_char,
-                0 as *const c_char,
+                b"null\0" as *const u8 as *const c_char,
             ),
         );
         let ref mut fresh176 =
@@ -16449,7 +16449,7 @@ pub unsafe extern "C" fn sp38SkeletonJson_readSkeletonData(
                 (spine38_strlen(Json38_getString(
                     skeleton,
                     b"spine\0" as *const u8 as *const c_char,
-                    0 as *const c_char,
+                    b"3.8.75\0" as *const u8 as *const c_char,
                 )))
                 .wrapping_add(1 as c_int as c_ulong),
             ),
@@ -16461,7 +16461,7 @@ pub unsafe extern "C" fn sp38SkeletonJson_readSkeletonData(
             Json38_getString(
                 skeleton,
                 b"spine\0" as *const u8 as *const c_char,
-                0 as *const c_char,
+                b"3.8.75\0" as *const u8 as *const c_char,
             ),
         );
         // if spine38_strcmp(
