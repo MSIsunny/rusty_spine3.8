@@ -14,11 +14,7 @@ libc = { version = "0.2", optional = true }
 egui = { version = "0.19", optional = true }
 egui_extras = { version = "0.19", optional = true }
 mint = { version = "0.5", optional = true }
-image = { version = "0.25.6", default-features = false, features = [
-    "png",
-    "webp",
-    "jpeg",
-] }
+image = { version = "0.25.6", default-features = false, features = ["png"] }
 
 [dev-dependencies]
 miniquad = "0.3.16"
